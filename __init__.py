@@ -678,10 +678,25 @@ class BCLMAP_CurveManager:
         update=lambda self, context: self.update(context),
         )
 
+    def __init__(self,
+                 interpolation: typing.Optional[str]='LINEAR',
+                 easing: typing.Optional[str]='EASE_IN_OUT',
+                 data: typing.Optional[typing.Union[BLCMAP_CurveDTO, BLCMAP_Curve]]=None) -> None:
+        curve: BLCMAP_Curve = self.curve
+        if interpolation == 'CURVE':
+            self['interpolation'] = 6
+            curve.__init__(data or linear)
+        else:
+            self["interpolation"] = ('LINEAR', 'SINE', 'QUAD', 'CUBIC', 'QUART', 'QUINT').index(interpolation)
+            self["easing"] = easing
+        self.__class__.update(self)
+
     def update(self, context: typing.Optional[bpy.types.Context]=None) -> None:
-        preset = PRESET_LUT['LINEAR' if self.interpolation == 'LINEAR' else f'{self.interpolation}{self.easing[4:]}']
-        curve: BLCMAP_Curve = getattr(context, "curve")
-        curve.__init__(preset)
+        ipo = self.interpolation
+        curve: BLCMAP_Curve = self.curve
+        if ipo != 'CURVE':
+            preset = PRESET_LUT['LINEAR' if ipo == 'LINEAR' else f'{ipo}{self.easing[4:]}']
+            curve.__init__(preset)
         nodetree_node_update(curve.node_identifier, curve)
 
 
