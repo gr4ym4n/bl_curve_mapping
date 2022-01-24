@@ -1,7 +1,6 @@
 
 import typing
 import dataclasses
-import operator
 import uuid
 import bpy
 import mathutils
@@ -422,14 +421,6 @@ def keyframe_points_assign(points: bpy.types.FCurveKeyframePoints,
 class BLCMAP_CurvePoint(bpy.types.PropertyGroup):
     """Point of a curve used for a curve mapping"""
 
-    HANDLE_TYPE_ITEMS = [
-        ('AUTO'        , "Auto Handle"        , "", 'NONE', 0),
-        ('AUTO_CLAMPED', "Auto Clamped Handle", "", 'NONE', 1),
-        ('VECTOR'      , "Vector Handle"      , "", 'NONE', 2),
-        ]
-
-    HANDLE_TYPE_INDEX = tuple(map(operator.itemgetter(0)), HANDLE_TYPE_ITEMS)
-
     def update(self, context: typing.Optional[bpy.types.Context]=None) -> None:
         try:
             curve = self.id_data.path_resolve(self.path_from_id().rpartition(".points.")[0])
@@ -442,7 +433,11 @@ class BLCMAP_CurvePoint(bpy.types.PropertyGroup):
     handle_type: bpy.props.EnumProperty(
         name="Handle Type",
         description="Curve interpolation at this point: Bezier or vector",
-        items=HANDLE_TYPE_ITEMS,
+        items=[
+            ('AUTO'        , "Auto Handle"        , "", 'NONE', 0),
+            ('AUTO_CLAMPED', "Auto Clamped Handle", "", 'NONE', 1),
+            ('VECTOR'      , "Vector Handle"      , "", 'NONE', 2),
+            ],
         default='AUTO',
         options=set(),
         update=update
