@@ -37,99 +37,199 @@ class BLCMAP_KeyframePointDTO:
 ###################################################################################################
 
 linear = BLCMAP_CurveDTO([
+    BLCMAP_CurvePointDTO((0.0, 0.0), 'VECTOR'),
+    BLCMAP_CurvePointDTO((1.0, 1.0), 'VECTOR'),
+    ])
+
+sine_in = BLCMAP_CurveDTO([
+    BLCMAP_CurvePointDTO((0.0, 0.0) , 'AUTO'),
+    BLCMAP_CurvePointDTO((0.1, 0.03), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((1.0, 1.0) , 'AUTO'),
+    ])
+
+sine_out = BLCMAP_CurveDTO([
+    BLCMAP_CurvePointDTO((0.0, 0.0) , 'AUTO'),
+    BLCMAP_CurvePointDTO((0.9, 0.97), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((1.0, 1.0) , 'AUTO'),
+    ])
+
+sine_in_out = BLCMAP_CurveDTO([
+    BLCMAP_CurvePointDTO((0.0, 0.0) , 'AUTO'),
+    BLCMAP_CurvePointDTO((0.1, 0.03), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.9, 0.97), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((1.0, 1.0) , 'AUTO'),
+    ])
+
+quad_in = BLCMAP_CurveDTO([
+    BLCMAP_CurvePointDTO((0.0, 0.0)   , 'AUTO'),
+    BLCMAP_CurvePointDTO((0.15, 0.045), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((1.0, 1.0)   , 'AUTO'),
+    ])
+
+quad_out = BLCMAP_CurveDTO([
+    BLCMAP_CurvePointDTO((0.0, 0.0)   , 'AUTO'),
+    BLCMAP_CurvePointDTO((0.85, 0.955), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((1.0, 1.0)   , 'AUTO'),
+    ])
+
+quad_in_out = BLCMAP_CurveDTO([
+    BLCMAP_CurvePointDTO((0.0, 0.0)   , 'AUTO'),
+    BLCMAP_CurvePointDTO((0.15, 0.045), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.85, 0.955), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((1.0, 1.0)   , 'AUTO'),
+    ])
+
+cubic_in = BLCMAP_CurveDTO([
+    BLCMAP_CurvePointDTO((0.0, 0.0) , 'AUTO'),
+    BLCMAP_CurvePointDTO((0.8, 0.97), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((1.0, 1.0) , 'AUTO'),
+    ])
+
+cubic_out = BLCMAP_CurveDTO([
+    BLCMAP_CurvePointDTO((0.0, 0.0) , 'AUTO'),
+    BLCMAP_CurvePointDTO((0.8, 0.97), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((1.0, 1.0) , 'AUTO'),
+    ])
+
+cubic_in_out = BLCMAP_CurveDTO([
+    BLCMAP_CurvePointDTO((0.0, 0.0) , 'AUTO'),
+    BLCMAP_CurvePointDTO((0.2, 0.03), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.8, 0.97), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((1.0, 1.0) , 'AUTO'),
+    ])
+
+quart_in = BLCMAP_CurveDTO([
+    BLCMAP_CurvePointDTO((0.0, 0.0)  , 'AUTO'),
+    BLCMAP_CurvePointDTO((0.25, 0.03), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((1.0, 1.0)  , 'AUTO'),
+    ])
+
+quart_out = BLCMAP_CurveDTO([
+    BLCMAP_CurvePointDTO((0.0, 0.0)  , 'AUTO'),
+    BLCMAP_CurvePointDTO((0.75, 0.97), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((1.0, 1.0)  , 'AUTO'),
+    ])
+
+quart_in_out = BLCMAP_CurveDTO([
+    BLCMAP_CurvePointDTO((0.0, 0.0)  , 'AUTO'),
+    BLCMAP_CurvePointDTO((0.25, 0.03), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.75, 0.97), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((1.0, 1.0)  , 'AUTO'),
+    ])
+
+quint_in = BLCMAP_CurveDTO([
+    BLCMAP_CurvePointDTO((0.0, 0.0)    , 'AUTO'),
+    BLCMAP_CurvePointDTO((0.275, 0.025), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((1.0, 1.0)    , 'AUTO'),
+    ])
+
+quint_out = BLCMAP_CurveDTO([
+    BLCMAP_CurvePointDTO((0.0, 0.0)    , 'AUTO'),
+    BLCMAP_CurvePointDTO((0.725, 0.975), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((1.0, 1.0)    , 'AUTO'),
+    ])
+
+quint_in_out = BLCMAP_CurveDTO([
+    BLCMAP_CurvePointDTO((0.0, 0.0)    , 'AUTO'),
+    BLCMAP_CurvePointDTO((0.275, 0.025), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.725, 0.975), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((1.0, 1.0)    , 'AUTO'),
+    ])
+
+falloff_linear = BLCMAP_CurveDTO([
     BLCMAP_CurvePointDTO((0.0, 1.0), 'VECTOR'),
     BLCMAP_CurvePointDTO((1.0, 0.0), 'VECTOR'),
     ])
 
-sine_in = BLCMAP_CurveDTO([
+falloff_sine_in = BLCMAP_CurveDTO([
     BLCMAP_CurvePointDTO((0.0, 1.0) , 'AUTO'),
     BLCMAP_CurvePointDTO((0.1, 0.97), 'AUTO_CLAMPED'),
     BLCMAP_CurvePointDTO((1.0, 0.0) , 'AUTO'),
     ])
 
-sine_out = BLCMAP_CurveDTO([
+falloff_sine_out = BLCMAP_CurveDTO([
     BLCMAP_CurvePointDTO((0.0, 1.0) , 'AUTO'),
     BLCMAP_CurvePointDTO((0.9, 0.03), 'AUTO_CLAMPED'),
     BLCMAP_CurvePointDTO((1.0, 0.0) , 'AUTO'),
     ])
 
-sine_in_out = BLCMAP_CurveDTO([
+falloff_sine_in_out = BLCMAP_CurveDTO([
     BLCMAP_CurvePointDTO((0.0, 1.0) , 'AUTO'),
     BLCMAP_CurvePointDTO((0.1, 0.97), 'AUTO_CLAMPED'),
     BLCMAP_CurvePointDTO((0.9, 0.03), 'AUTO_CLAMPED'),
     BLCMAP_CurvePointDTO((1.0, 0.0) , 'AUTO'),
     ])
 
-quad_in = BLCMAP_CurveDTO([
+falloff_quad_in = BLCMAP_CurveDTO([
     BLCMAP_CurvePointDTO((0.0, 1.0)   , 'AUTO'),
     BLCMAP_CurvePointDTO((0.15, 0.955), 'AUTO_CLAMPED'),
     BLCMAP_CurvePointDTO((1.0, 0.0)   , 'AUTO'),
     ])
 
-quad_out = BLCMAP_CurveDTO([
+falloff_quad_out = BLCMAP_CurveDTO([
     BLCMAP_CurvePointDTO((0.0, 1.0)   , 'AUTO'),
     BLCMAP_CurvePointDTO((0.85, 0.045), 'AUTO_CLAMPED'),
     BLCMAP_CurvePointDTO((1.0, 0.0)   , 'AUTO'),
     ])
 
-quad_in_out = BLCMAP_CurveDTO([
+falloff_quad_in_out = BLCMAP_CurveDTO([
     BLCMAP_CurvePointDTO((0.0, 1.0)   , 'AUTO'),
     BLCMAP_CurvePointDTO((0.15, 0.955), 'AUTO_CLAMPED'),
     BLCMAP_CurvePointDTO((0.85, 0.045), 'AUTO_CLAMPED'),
     BLCMAP_CurvePointDTO((1.0, 0.0)   , 'AUTO'),
     ])
 
-cubic_in = BLCMAP_CurveDTO([
+falloff_cubic_in = BLCMAP_CurveDTO([
     BLCMAP_CurvePointDTO((0.0, 1.0) , 'AUTO'),
     BLCMAP_CurvePointDTO((0.2, 0.97), 'AUTO_CLAMPED'),
     BLCMAP_CurvePointDTO((1.0, 0.0) , 'AUTO'),
     ])
 
-cubic_out = BLCMAP_CurveDTO([
+falloff_cubic_out = BLCMAP_CurveDTO([
     BLCMAP_CurvePointDTO((0.0, 1.0) , 'AUTO'),
     BLCMAP_CurvePointDTO((0.8, 0.03), 'AUTO_CLAMPED'),
     BLCMAP_CurvePointDTO((1.0, 0.0) , 'AUTO'),
     ])
 
-cubic_in_out = BLCMAP_CurveDTO([
+falloff_cubic_in_out = BLCMAP_CurveDTO([
     BLCMAP_CurvePointDTO((0.0, 1.0) , 'AUTO'),
     BLCMAP_CurvePointDTO((0.2, 0.97), 'AUTO_CLAMPED'),
     BLCMAP_CurvePointDTO((0.8, 0.03), 'AUTO_CLAMPED'),
     BLCMAP_CurvePointDTO((1.0, 0.0) , 'AUTO'),
     ])
 
-quart_in = BLCMAP_CurveDTO([
+falloff_quart_in = BLCMAP_CurveDTO([
     BLCMAP_CurvePointDTO((0.0, 1.0)  , 'AUTO'),
     BLCMAP_CurvePointDTO((0.25, 0.97), 'AUTO_CLAMPED'),
     BLCMAP_CurvePointDTO((1.0, 0.0)  , 'AUTO'),
     ])
 
-quart_out = BLCMAP_CurveDTO([
+falloff_quart_out = BLCMAP_CurveDTO([
     BLCMAP_CurvePointDTO((0.0, 1.0)  , 'AUTO'),
     BLCMAP_CurvePointDTO((0.75, 0.03), 'AUTO_CLAMPED'),
     BLCMAP_CurvePointDTO((1.0, 0.0)  , 'AUTO'),
     ])
 
-quart_in_out = BLCMAP_CurveDTO([
+falloff_quart_in_out = BLCMAP_CurveDTO([
     BLCMAP_CurvePointDTO((0.0, 1.0)  , 'AUTO'),
     BLCMAP_CurvePointDTO((0.25, 0.97), 'AUTO_CLAMPED'),
     BLCMAP_CurvePointDTO((0.75, 0.03), 'AUTO_CLAMPED'),
     BLCMAP_CurvePointDTO((1.0, 0.0)  , 'AUTO'),
     ])
 
-quint_in = BLCMAP_CurveDTO([
+falloff_quint_in = BLCMAP_CurveDTO([
     BLCMAP_CurvePointDTO((0.0, 1.0)    , 'AUTO'),
     BLCMAP_CurvePointDTO((0.275, 0.975), 'AUTO_CLAMPED'),
     BLCMAP_CurvePointDTO((1.0, 0.0)    , 'AUTO'),
     ])
 
-quint_out = BLCMAP_CurveDTO([
+falloff_quint_out = BLCMAP_CurveDTO([
     BLCMAP_CurvePointDTO((0.0, 1.0)    , 'AUTO'),
     BLCMAP_CurvePointDTO((0.725, 0.025), 'AUTO_CLAMPED'),
     BLCMAP_CurvePointDTO((1.0, 0.0)    , 'AUTO'),
     ])
 
-quint_in_out = BLCMAP_CurveDTO([
+falloff_quint_in_out = BLCMAP_CurveDTO([
     BLCMAP_CurvePointDTO((0.0, 1.0)    , 'AUTO'),
     BLCMAP_CurvePointDTO((0.275, 0.975), 'AUTO_CLAMPED'),
     BLCMAP_CurvePointDTO((0.725, 0.025), 'AUTO_CLAMPED'),
@@ -137,22 +237,70 @@ quint_in_out = BLCMAP_CurveDTO([
     ])
 
 PRESET_LUT = {
-    'LINEAR'      : linear,
-    'SINE_IN'     : sine_in,
-    'SINE_OUT'    : sine_out,
-    'SINE_IN_OUT' : sine_in_out,
-    'QUAD_IN'     : quad_in,
-    'QUAD_OUT'    : quad_out,
-    'QUAD_IN_OUT' : quad_in_out,
-    'CUBIC_IN'    : cubic_in,
-    'CUBIC_OUT'   : cubic_out,
-    'CUBIC_IN_OUT': cubic_in_out,
-    'QUART_IN'    : quart_in,
-    'QUART_OUT'   : quart_out,
-    'QUART_IN_OUT': quart_in_out,
-    'QUINT_IN'    : quint_in,
-    'QUINT_OUT'   : quint_out,
-    'QUINT_IN_OUT': quint_in_out,
+    'SIGMOID': {
+        'LINEAR': {
+            'EASE_IN'    : linear,
+            'EASE_OUT'   : linear,
+            'EASE_IN_OUT': linear,
+            },
+        'SINE': {
+            'EASE_IN'    : sine_in,
+            'EASE_OUT'   : sine_out,
+            'EASE_IN_OUT': sine_in_out,
+            },
+        'QUAD': {
+            'EASE_IN'    : quad_in,
+            'EASE_OUT'   : quad_out,
+            'EASE_IN_OUT': quad_in_out,
+            },
+        'CUBIC': {
+            'EASE_IN'    : cubic_in,
+            'EASE_OUT'   : cubic_out,
+            'EASE_IN_OUT': cubic_in_out,
+            },
+        'QUART': {
+            'EASE_IN'    : quart_in,
+            'EASE_OUT'   : quart_out,
+            'EASE_IN_OUT': quart_in_out,
+            },
+        'QUINT': {
+            'EASE_IN'    : quint_in,
+            'EASE_OUT'   : quint_out,
+            'EASE_IN_OUT': quint_in_out,
+            },
+    },
+    'FALLOFF': {
+        'LINEAR': {
+            'EASE_IN'    : falloff_linear,
+            'EASE_OUT'   : falloff_linear,
+            'EASE_IN_OUT': falloff_linear,
+            },
+        'SINE': {
+            'EASE_IN'    : falloff_sine_in,
+            'EASE_OUT'   : falloff_sine_out,
+            'EASE_IN_OUT': falloff_sine_in_out,
+            },
+        'QUAD': {
+            'EASE_IN'    : falloff_quad_in,
+            'EASE_OUT'   : falloff_quad_out,
+            'EASE_IN_OUT': falloff_quad_in_out,
+            },
+        'CUBIC': {
+            'EASE_IN'    : falloff_cubic_in,
+            'EASE_OUT'   : falloff_cubic_out,
+            'EASE_IN_OUT': falloff_cubic_in_out,
+            },
+        'QUART': {
+            'EASE_IN'    : falloff_quart_in,
+            'EASE_OUT'   : falloff_quart_out,
+            'EASE_IN_OUT': falloff_quart_in_out,
+            },
+        'QUINT': {
+            'EASE_IN'    : falloff_quint_in,
+            'EASE_OUT'   : falloff_quint_out,
+            'EASE_IN_OUT': falloff_quint_in_out,
+            },
+    },
     }
 
 #endregion Presets
@@ -644,6 +792,17 @@ class BCLMAP_CurveManager:
         options=set()
         )
 
+    curve_type: bpy.props.EnumProperty(
+        name="Type",
+        items=[
+            ('SIGMOID', "Sigmoid", "", 'NONE', 0),
+            ('FALLOFF', "Falloff", "", 'NONE', 1),
+            ],
+        default='SIGMOID',
+        options=set(),
+        update=lambda self, context: self.update(context)
+        )
+
     easing: bpy.props.EnumProperty(
         name="Easing",
         items=[
@@ -674,10 +833,12 @@ class BCLMAP_CurveManager:
         )
 
     def __init__(self,
+                 curve_type: typing.Optional[str]='SIGMOID',
                  interpolation: typing.Optional[str]='LINEAR',
                  easing: typing.Optional[str]='EASE_IN_OUT',
                  data: typing.Optional[typing.Union[BLCMAP_CurveDTO, BLCMAP_Curve]]=None) -> None:
         curve: BLCMAP_Curve = self.curve
+        self["curve_type"] = curve_type
         if interpolation == 'CURVE':
             self['interpolation'] = 6
             curve.__init__(data or linear)
@@ -690,7 +851,7 @@ class BCLMAP_CurveManager:
         ipo = self.interpolation
         curve: BLCMAP_Curve = self.curve
         if ipo != 'CURVE':
-            preset = PRESET_LUT['LINEAR' if ipo == 'LINEAR' else f'{ipo}{self.easing[4:]}']
+            preset = PRESET_LUT[self.curve_type][ipo][self.easing]
             curve.__init__(preset)
         nodetree_node_update(curve.node_identifier, curve)
 
