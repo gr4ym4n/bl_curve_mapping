@@ -952,11 +952,8 @@ class BLCMAP_OT_curve_edit(bpy.types.Operator):
 
 def draw_curve_manager_ui(layout: bpy.types.UILayout, manager: BCLMAP_CurveManager) -> None:
     box = layout.box()
-    box.separator(factor=0.1)
-
     row = box.row(align=True)
     row.ui_units_y = 0.01
-    row.separator(factor=0.5)
     row.context_pointer_set("curve", manager.curve)
     row.operator_context = 'INVOKE_DEFAULT'
 
@@ -979,8 +976,6 @@ def draw_curve_manager_ui(layout: bpy.types.UILayout, manager: BCLMAP_CurveManag
     subrow.operator(BLCMAP_OT_curve_paste.bl_idname, icon='PASTEDOWN', text="")
 
     curve = manager.curve
-
-    row.separator(factor=0.5)
 
     col = box.column()
     col.scale_x = 0.01
