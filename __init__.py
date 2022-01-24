@@ -759,7 +759,7 @@ class BLCMAP_OT_curve_edit(bpy.types.Operator):
             self.report({'ERROR'}, f'{self.__class__.__name__} Invalid context.curve {curve.__class__.__name__}')
             return {'CANCELLED'}
 
-        node = nodetree_node_update(self.id_name, curve)
+        node = nodetree_node_update(self.bl_idname, curve)
         BLCMAP_OT_curve_edit.node = node
         return context.window_manager.invoke_popup(self)
 
