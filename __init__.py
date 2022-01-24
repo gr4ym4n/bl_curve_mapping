@@ -911,7 +911,6 @@ class BLCMAP_OT_curve_edit(bpy.types.Operator):
 
     def __del__(self) -> None:
         BLCMAP_OT_curve_edit.node = None
-        BLCMAP_OT_curve_edit.data = None
 
     def invoke(self, context: bpy.types.Context, event: bpy.types.Event) -> typing.Set[str]:
         curve = getattr(context, "curve", None)
@@ -922,7 +921,7 @@ class BLCMAP_OT_curve_edit(bpy.types.Operator):
 
         node = nodetree_node_update(self.bl_idname, curve)
         BLCMAP_OT_curve_edit.node = node
-        return context.window_manager.invoke_popup(self)
+        return context.window_manager.invoke_props_dialog(self)
 
     def draw(self, context: bpy.types.Context) -> None:
         layout = self.layout
