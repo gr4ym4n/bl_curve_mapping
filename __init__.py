@@ -818,12 +818,14 @@ def draw_curve_manager_ui(layout: bpy.types.UILayout, manager: BCLMAP_CurveManag
     subrow.operator(BLCMAP_OT_curve_copy.bl_idname, icon='COPYDOWN', text="")
     subrow.operator(BLCMAP_OT_curve_paste.bl_idname, icon='PASTEDOWN', text="")
 
+    curve = manager.curve
+
     row.separator(factor=0.5)
 
     col = box.column()
     col.scale_x = 0.01
     col.enabled = False
-    col.template_curve_mapping(nodetree_node_ensure(manager.curve.get_node_identifier(), manager.curve), "mapping")
+    col.template_curve_mapping(nodetree_node_ensure(curve.get_node_identifier(), curve), "mapping")
     col.separator(factor=0.3)
 
 #endregion UI Utilities
