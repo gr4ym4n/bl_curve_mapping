@@ -823,7 +823,7 @@ def draw_curve_manager_ui(layout: bpy.types.UILayout, manager: BCLMAP_CurveManag
     col = box.column()
     col.scale_x = 0.01
     col.enabled = False
-    col.template_curve_mapping(nodetree_node_ensure(manager.curve), "mapping")
+    col.template_curve_mapping(nodetree_node_ensure(manager.curve.get_node_identifier(), manager.curve), "mapping")
     col.separator(factor=0.3)
 
 #endregion UI Utilities
