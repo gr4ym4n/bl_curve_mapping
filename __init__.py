@@ -610,7 +610,7 @@ class BLCMAP_CurvePoint(bpy.types.PropertyGroup):
         )
 
     def __init__(self, data: typing.Union[BLCMAP_CurvePointDTO, 'BLCMAP_CurvePoint', bpy.types.CurveMapPoint]) -> None:
-        self["handle_type"] = data.handle_type
+        self["handle_type"] = ('AUTO', 'AUTO_CLAMPED', 'VECTOR').index(data.handle_type)
         self["location"] = data.location
         self["select"] = data.select
 
