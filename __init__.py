@@ -5,8 +5,6 @@ import uuid
 import bpy
 import mathutils
 
-CURVE_BUFFER: 'BLCMAP_CurveDTO' = None
-
 #region Data Transfer Objects
 ###################################################################################################
 
@@ -566,6 +564,72 @@ def keyframe_points_assign(points: bpy.types.FCurveKeyframePoints,
 #region Property Groups
 ###################################################################################################
 
+class BLCMAP_CurvePointProperties(bpy.types.PropertyGroup):
+
+    handle_type: bpy.props.EnumProperty(
+        name="Handle Type",
+        description="Curve interpolation at this point: Bezier or vector",
+        items=[
+            ('AUTO'        , "Auto Handle"        , "", 'NONE', 0),
+            ('AUTO_CLAMPED', "Auto Clamped Handle", "", 'NONE', 1),
+            ('VECTOR'      , "Vector Handle"      , "", 'NONE', 2),
+            ],
+        get=lambda self: self.get("handle_type", 0),
+        options=set(),
+        )
+
+    location: bpy.props.FloatVectorProperty(
+        name="Location",
+        description="X/Y coordinates of the curve point",
+        size=2,
+        subtype='XYZ',
+        get=lambda self: self.get("location", (0.0, 0.0)),
+        options=set(),
+        )
+
+    select: bpy.props.BoolProperty(
+        name="Select",
+        description="Selection state of the curve point",
+        get=lambda self: self.get("select", False),
+        options=set(),
+        )
+
+    def __init__(self, data: typing.Union[BLCMAP_CurvePointDTO,
+                                          'BLCMAP_CurvePoint',
+                                          'BLCMAP_CurvePointProperties',
+                                           bpy.types.CurveMapPoint]) -> None:
+        self["handle_type"] = ('AUTO', 'AUTO_CLAMPED', 'VECTOR').index(data.handle_type)
+        self["location"] = data.location
+        self["select"] = data.select
+
+class BLCMAP_CurveProperties(bpy.types.PropertyGroup):
+    """Curve in a curve mapping"""
+
+    extend: bpy.props.EnumProperty(
+        name="Extend",
+        description="Extrapolate the curve or extend it horizontally",
+        items=[
+            ('HORIZONTAL'  , "Horizontal"  , "", 'NONE', 0),
+            ('EXTRAPOLATED', "Extrapolated", "", 'NONE', 1),
+            ],
+        get=lambda self: self.get("extend", 0),
+        options=set(),
+        )
+
+    points: bpy.props.CollectionProperty(
+        name="Points",
+        description="",
+        type=BLCMAP_CurvePointProperties,
+        options=set()
+        )
+
+    def __init__(self, data: typing.Union[BLCMAP_CurveDTO, 'BLCMAP_Curve', 'BLCMAP_CurveProperties']) -> None:
+        self["extend"] = ('HORIZONTAL', 'EXTRAPOLATED').index(data.extend)
+        points = self.points
+        points.clear()
+        for item in data:
+            points.add().__init__(item)
+
 class BLCMAP_CurvePoint(bpy.types.PropertyGroup):
     """Point of a curve used for a curve mapping"""
 
@@ -609,7 +673,7 @@ class BLCMAP_CurvePoint(bpy.types.PropertyGroup):
         update=update
         )
 
-    def __init__(self, data: typing.Union[BLCMAP_CurvePointDTO, 'BLCMAP_CurvePoint', bpy.types.CurveMapPoint]) -> None:
+    def __init__(self, data: typing.Union[BLCMAP_CurvePointDTO, BLCMAP_CurvePointProperties, 'BLCMAP_CurvePoint', bpy.types.CurveMapPoint]) -> None:
         self["handle_type"] = ('AUTO', 'AUTO_CLAMPED', 'VECTOR').index(data.handle_type)
         self["location"] = data.location
         self["select"] = data.select
@@ -716,13 +780,12 @@ class BLCMAP_Curve(bpy.types.PropertyGroup):
 
     NODE_NAME_PREFIX = "node"
 
-    EXTENSION_ITEMS = [
-        ('HORIZONTAL', "Horizontal", ""),
-        ('EXTRAPOLATED', "Extrapolated", ""),
-        ]
-
-    def __init__(self, data: typing.Union[BLCMAP_CurveDTO, 'BLCMAP_Curve', bpy.types.CurveMap]) -> None:
-        self["extend"] = data.extend
+    def __init__(self,
+                 data: typing.Union[BLCMAP_CurveDTO, 'BLCMAP_Curve', 'BLCMAP_CurveProperties', bpy.types.CurveMap],
+                 extend: typing.Optional[str]=None) -> None:
+        if extend is None:
+            extend = 'HORIZONTAL' if isinstance(data, bpy.types.CurveMap) else data.extend
+        self["extend"] = ('HORIZONTAL', 'EXTRAPOLATED').index(extend)
         self.points.__init__(data.points)
 
     def get_node_identifier(self) -> str:
@@ -764,7 +827,10 @@ class BLCMAP_Curve(bpy.types.PropertyGroup):
     extend: bpy.props.EnumProperty(
         name="Extend",
         description="Extrapolate the curve or extend it horizontally",
-        items=EXTENSION_ITEMS,
+        items=[
+            ('HORIZONTAL'  , "Horizontal"  , "", 'NONE', 0),
+            ('EXTRAPOLATED', "Extrapolated", "", 'NONE', 1),
+            ],
         default='HORIZONTAL',
         options=set(),
         update=update
@@ -874,8 +940,9 @@ class BLCMAP_OT_curve_copy(bpy.types.Operator):
 
     def execute(self, context: bpy.types.Context) -> typing.Set[str]:
         curve = getattr(context, "curve", None)
-        global CURVE_BUFFER
-        CURVE_BUFFER = BLCMAP_CurveDTO(tuple(BLCMAP_CurvePointDTO(point.location, point.handle_type) for point in curve.points), curve.extend)
+        if not hasattr(bpy.types.Scene, "blcmap_curve_buffer"):
+            bpy.types.Scene.blcmap_curve_buffer = bpy.props.PointerProperty(type=BLCMAP_CurveProperties)
+        context.scene.blcmap_curve_buffer.__init__(curve)
         return {'FINISHED'}
 
 class BLCMAP_OT_curve_paste(bpy.types.Operator):
@@ -887,12 +954,13 @@ class BLCMAP_OT_curve_paste(bpy.types.Operator):
 
     @classmethod
     def poll(cls, context: bpy.types.Context) -> bool:
-        return CURVE_BUFFER is not None and isinstance(getattr(context, "curve", None), BLCMAP_Curve)
+        return (isinstance(getattr(context, "curve", None), BLCMAP_Curve)
+                and hasattr(context.scene, "blcmap_curve_buffer")
+                and context.scene.is_property_set("blcmap_curve_buffer"))
 
     def execute(self, context: bpy.types.Context) -> typing.Set[str]:
-        global CURVE_BUFFER
         curve: BLCMAP_Curve = getattr(context, "curve")
-        curve.__init__(CURVE_BUFFER)
+        curve.__init__(context.scene.blcmap_curve_buffer)
         curve.update()
         return {'FINISHED'}
 
@@ -940,7 +1008,7 @@ class BLCMAP_OT_curve_edit(bpy.types.Operator):
         if not isinstance(node, bpy.types.ShaderNodeVectorCurve):
             self.report({'ERROR'}, f'{self.__class__.__name__} Invalid context.node {node.__class__.__name__}')
 
-        curve.__init__(node.mapping.curves[0])
+        curve.__init__(node.mapping.curves[0], extend=node.mapping.extend)
         curve.update()
 
         return {'FINISHED'}
