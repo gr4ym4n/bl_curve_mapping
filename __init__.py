@@ -915,6 +915,22 @@ def _calc_bezier_handles(p2, ht, h1, h2, prev=None, next=None) -> None:
         h2[0] = p2[0] + dvec_b[0] * (1.0/3.0)
         h2[1] = p2[1] + dvec_b[1] * (1.0/3.0)
 
+def range_x(points: typing.Iterable[typing.Union['BLCMAP_CurvePoint', BLCMAP_CurvePointDTO, bpy.types.CurveMapPoint]],
+           range_: typing.Tuple[float, float]) -> typing.List[BLCMAP_CurvePointDTO]:
+    data = [
+        (mathutils.Vector(pt.location), pt.handle_type, pt.select) for pt in points
+        ]
+    a, b = range_
+    if a > b:
+        a, b = b, a
+        for item in data:
+            item[0][0] = 1.0 - item[0][0]
+        data.reverse()
+    d = b - a
+    for item in data:
+        item[0][0] = a + item[0][0] * d
+    return [BLCMAP_CurvePointDTO(*item) for item in data]
+
 def to_bezier(points: typing.Iterable[typing.Union['BLCMAP_CurvePoint', bpy.types.CurveMapPoint]],
               x_range: typing.Optional[typing.Tuple[float, float]]=None,
               y_range: typing.Optional[typing.Tuple[float, float]]=None,
