@@ -234,6 +234,75 @@ falloff_quint_in_out = BLCMAP_CurveDTO([
     BLCMAP_CurvePointDTO((1.0, 0.0)    , 'AUTO'),
     ])
 
+def _bell(curve: BLCMAP_CurveDTO, ramp: typing.Optional[str]='BOTH') -> BLCMAP_CurveDTO:
+    head = []
+    tail = []
+
+    for point in curve.points:
+        head.append(BLCMAP_CurvePointDTO((point.location[0]*0.5, point.location[1]), point.handle_type))
+
+    if ramp == 'HEAD':
+        tail.append(BLCMAP_CurvePointDTO((1.0, 1.0), 'VECTOR'))
+    else:
+        for point in reversed(head[:-1]):
+            tail.append(BLCMAP_CurvePointDTO((1.0-point.location[0], point.location[1]), point.handle_type))
+        if ramp == 'TAIL':
+            head.clear()
+            head.append(BLCMAP_CurvePointDTO((0.0, 1.0), 'VECTOR'))
+
+    return BLCMAP_Curve(head + tail)
+
+bell_linear = _bell(linear)
+bell_sine_in = _bell(sine_in)
+bell_sine_out = _bell(sine_out)
+bell_sine_in_out = _bell(sine_in_out)
+bell_quad_in = _bell(quad_in)
+bell_quad_out = _bell(quad_out)
+bell_quad_in_out = _bell(quad_in_out)
+bell_cubic_in = _bell(cubic_in)
+bell_cubic_out = _bell(cubic_out)
+bell_cubic_in_out = _bell(cubic_in_out)
+bell_quart_in = _bell(quart_in)
+bell_quart_out = _bell(quart_out)
+bell_quart_in_out = _bell(quart_in_out)
+bell_quint_in = _bell(quint_in)
+bell_quint_out = _bell(quint_out)
+bell_quint_in_out = _bell(quint_in_out)
+
+bell_linear_head = _bell(linear, 'HEAD')
+bell_sine_in_head = _bell(sine_in, 'HEAD')
+bell_sine_out_head = _bell(sine_out, 'HEAD')
+bell_sine_in_out_head = _bell(sine_in_out, 'HEAD')
+bell_quad_in_head = _bell(quad_in, 'HEAD')
+bell_quad_out_head = _bell(quad_out, 'HEAD')
+bell_quad_in_out_head = _bell(quad_in_out, 'HEAD')
+bell_cubic_in_head = _bell(cubic_in, 'HEAD')
+bell_cubic_out_head = _bell(cubic_out, 'HEAD')
+bell_cubic_in_out_head = _bell(cubic_in_out, 'HEAD')
+bell_quart_in_head = _bell(quart_in, 'HEAD')
+bell_quart_out_head = _bell(quart_out, 'HEAD')
+bell_quart_in_out_head = _bell(quart_in_out, 'HEAD')
+bell_quint_in_head = _bell(quint_in, 'HEAD')
+bell_quint_out_head = _bell(quint_out, 'HEAD')
+bell_quint_in_out_head = _bell(quint_in_out, 'HEAD')
+
+bell_linear_tail = _bell(linear, 'TAIL')
+bell_sine_in_tail = _bell(sine_in, 'TAIL')
+bell_sine_out_tail = _bell(sine_out, 'TAIL')
+bell_sine_in_out_tail = _bell(sine_in_out, 'TAIL')
+bell_quad_in_tail = _bell(quad_in, 'TAIL')
+bell_quad_out_tail = _bell(quad_out, 'TAIL')
+bell_quad_in_out_tail = _bell(quad_in_out, 'TAIL')
+bell_cubic_in_tail = _bell(cubic_in, 'TAIL')
+bell_cubic_out_tail = _bell(cubic_out, 'TAIL')
+bell_cubic_in_out_tail = _bell(cubic_in_out, 'TAIL')
+bell_quart_in_tail = _bell(quart_in, 'TAIL')
+bell_quart_out_tail = _bell(quart_out, 'TAIL')
+bell_quart_in_out_tail = _bell(quart_in_out, 'TAIL')
+bell_quint_in_tail = _bell(quint_in, 'TAIL')
+bell_quint_out_tail = _bell(quint_out, 'TAIL')
+bell_quint_in_out_tail = _bell(quint_in_out, 'TAIL')
+
 PRESET_LUT = {
     'SIGMOID': {
         'LINEAR': {
@@ -298,6 +367,104 @@ PRESET_LUT = {
             'EASE_OUT'   : falloff_quint_out,
             'EASE_IN_OUT': falloff_quint_in_out,
             },
+    },
+    'BELL': {
+        'HEAD': {
+            'LINEAR': {
+                'EASE_IN'    : bell_linear_head,
+                'EASE_OUT'   : bell_linear_head,
+                'EASE_IN_OUT': bell_linear_head,
+                },
+            'SINE': {
+                'EASE_IN'    : bell_sine_in_head,
+                'EASE_OUT'   : bell_sine_out_head,
+                'EASE_IN_OUT': bell_sine_in_out_head,
+                },
+            'QUAD': {
+                'EASE_IN'    : bell_quad_in_head,
+                'EASE_OUT'   : bell_quad_out_head,
+                'EASE_IN_OUT': bell_quad_in_out_head,
+                },
+            'CUBIC': {
+                'EASE_IN'    : bell_cubic_in_head,
+                'EASE_OUT'   : bell_cubic_out_head,
+                'EASE_IN_OUT': bell_cubic_in_out_head,
+                },
+            'QUART': {
+                'EASE_IN'    : bell_quart_in_head,
+                'EASE_OUT'   : bell_quart_out_head,
+                'EASE_IN_OUT': bell_quart_in_out_head,
+                },
+            'QUINT': {
+                'EASE_IN'    : bell_quint_in_head,
+                'EASE_OUT'   : bell_quint_out_head,
+                'EASE_IN_OUT': bell_quint_in_out_head,
+                },
+        },
+        'TAIL': {
+            'LINEAR': {
+                'EASE_IN'    : bell_linear_tail,
+                'EASE_OUT'   : bell_linear_tail,
+                'EASE_IN_OUT': bell_linear_tail,
+                },
+            'SINE': {
+                'EASE_IN'    : bell_sine_in_tail,
+                'EASE_OUT'   : bell_sine_out_tail,
+                'EASE_IN_OUT': bell_sine_in_out_tail,
+                },
+            'QUAD': {
+                'EASE_IN'    : bell_quad_in_tail,
+                'EASE_OUT'   : bell_quad_out_tail,
+                'EASE_IN_OUT': bell_quad_in_out_tail,
+                },
+            'CUBIC': {
+                'EASE_IN'    : bell_cubic_in_tail,
+                'EASE_OUT'   : bell_cubic_out_tail,
+                'EASE_IN_OUT': bell_cubic_in_out_tail,
+                },
+            'QUART': {
+                'EASE_IN'    : bell_quart_in_tail,
+                'EASE_OUT'   : bell_quart_out_tail,
+                'EASE_IN_OUT': bell_quart_in_out_tail,
+                },
+            'QUINT': {
+                'EASE_IN'    : bell_quint_in_tail,
+                'EASE_OUT'   : bell_quint_out_tail,
+                'EASE_IN_OUT': bell_quint_in_out_tail,
+                },
+        },
+        'BOTH': {
+            'LINEAR': {
+                'EASE_IN'    : bell_linear,
+                'EASE_OUT'   : bell_linear,
+                'EASE_IN_OUT': bell_linear,
+                },
+            'SINE': {
+                'EASE_IN'    : bell_sine_in,
+                'EASE_OUT'   : bell_sine_out,
+                'EASE_IN_OUT': bell_sine_in_out,
+                },
+            'QUAD': {
+                'EASE_IN'    : bell_quad_in,
+                'EASE_OUT'   : bell_quad_out,
+                'EASE_IN_OUT': bell_quad_in_out,
+                },
+            'CUBIC': {
+                'EASE_IN'    : bell_cubic_in,
+                'EASE_OUT'   : bell_cubic_out,
+                'EASE_IN_OUT': bell_cubic_in_out,
+                },
+            'QUART': {
+                'EASE_IN'    : bell_quart_in,
+                'EASE_OUT'   : bell_quart_out,
+                'EASE_IN_OUT': bell_quart_in_out,
+                },
+            'QUINT': {
+                'EASE_IN'    : bell_quint_in,
+                'EASE_OUT'   : bell_quint_out,
+                'EASE_IN_OUT': bell_quint_in_out,
+                },
+        },
     },
     }
 
@@ -863,6 +1030,7 @@ class BCLMAP_CurveManager:
         items=[
             ('SIGMOID', "Sigmoid", "", 'NONE', 0),
             ('FALLOFF', "Falloff", "", 'NONE', 1),
+            ('BELL'   , "Bell"   , "", 'NONE', 2),
             ],
         default='SIGMOID',
         options=set(),
@@ -898,27 +1066,42 @@ class BCLMAP_CurveManager:
         update=lambda self, context: self.update(context),
         )
 
-    def __init__(self,
-                 curve_type: typing.Optional[str]='SIGMOID',
-                 interpolation: typing.Optional[str]='LINEAR',
-                 easing: typing.Optional[str]='EASE_IN_OUT',
-                 data: typing.Optional[typing.Union[BLCMAP_CurveDTO, BLCMAP_Curve]]=None) -> None:
-        curve: BLCMAP_Curve = self.curve
-        self["curve_type"] = curve_type
-        if interpolation == 'CURVE':
-            self['interpolation'] = 6
-            curve.__init__(data or linear)
-        else:
-            self["interpolation"] = ('LINEAR', 'SINE', 'QUAD', 'CUBIC', 'QUART', 'QUINT').index(interpolation)
-            self["easing"] = easing
-        self.__class__.update(self)
+    ramp: bpy.props.EnumProperty(
+        name="Ramp",
+        items=[
+            ('HEAD', "Head", "", 'NONE', 0),
+            ('TAIL', "Tail", "", 'NONE', 1),
+            ('BOTH', "Both", "", 'NONE', 2),
+            ],
+        default='BOTH',
+        options=set(),
+        update=lambda self, context: self.update(context)
+        )
+
+    def __init__(self, **options: typing.Dict[str, typing.Any]) -> None:
+        curve = options.pop("curve")
+        if curve:
+            options["interpolation"] = 6
+            self.curve.__init__(curve)
+        for key, value in options.items():
+            if key in ("type", "curve_type"):
+                self["curve_type"] = ('SIGMOID', 'FALLOFF', 'BELL').index(value)
+            elif key == "interpolation":
+                self["interpolation"] = ('LINEAR', 'SINE', 'QUAD', 'CUBIC', 'QUART', 'QUINT', 'CURVE').index(value)
+            elif key == "easing":
+                self["easing"] = ('EASE_IN', 'EASE_OUT', 'EASE_IN_OUT').index(value)
+            elif key == "ramp":
+                self["ramp"] = ('HEAD', 'TAIL', 'BOTH').index(value)
+        BCLMAP_CurveManager.update(self)
 
     def update(self, context: typing.Optional[bpy.types.Context]=None) -> None:
         ipo = self.interpolation
         curve: BLCMAP_Curve = self.curve
         if ipo != 'CURVE':
-            preset = PRESET_LUT[self.curve_type][ipo][self.easing]
-            curve.__init__(preset)
+            type = self.curve_type
+            presets = PRESET_LUT[type][ipo]
+            curve.__init__(presets[self.easing][self.ramp] if type == 'BELL' else presets[self.easing])
+
         nodetree_node_update(curve.node_identifier, curve)
 
 
@@ -1027,14 +1210,18 @@ def draw_curve_manager_ui(layout: bpy.types.UILayout, manager: BCLMAP_CurveManag
 
     row.prop(manager, "interpolation", text="")
     
+    type = manager.curve_type
     ipo = manager.interpolation
-    if ipo != 'LINEAR':
+    if ipo != 'LINEAR' or type == 'BELL':
         subrow = row.row(align=True)
         subrow.ui_units_x = 6.0
         if ipo == 'CURVE':
             subrow.operator(BLCMAP_OT_curve_edit.bl_idname, text="Edit")
         else:
-            subrow.prop(manager, "easing", text="")
+            if type == 'BELL':
+                subrow.prop(manager, 'ramp', text="")
+            if ipo != 'LINEAR':
+                subrow.prop(manager, "easing", text="")
 
     row.separator()
 
