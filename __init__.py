@@ -1525,7 +1525,7 @@ def draw_curve_manager_ui(layout: bpy.types.UILayout, manager: BCLMAP_CurveManag
             if ipo != 'LINEAR':
                 subrow.prop(manager, "easing", text="")
             if type == 'BELL':
-                subrow.prop(manager, 'ramp', text="", icon='DOWNARROW_HLT')
+                subrow.prop(manager, 'ramp', text="", icon='DOWNARROW_HLT', icon_only=True)
 
     row.separator()
 
