@@ -1079,7 +1079,7 @@ class BCLMAP_CurveManager:
         )
 
     def __init__(self, **options: typing.Dict[str, typing.Any]) -> None:
-        curve = options.pop("curve")
+        curve = options.pop("curve", None)
         if curve:
             options["interpolation"] = 6
             self.curve.__init__(curve)
