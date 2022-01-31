@@ -1099,8 +1099,11 @@ class BCLMAP_CurveManager:
         curve: BLCMAP_Curve = self.curve
         if ipo != 'CURVE':
             type = self.curve_type
-            presets = PRESET_LUT[type][ipo]
-            curve.__init__(presets[self.easing][self.ramp] if type == 'BELL' else presets[self.easing])
+            if type == 'BELL':
+                preset = PRESET_LUT[type][self.ramp][ipo][self.easing]
+            else:
+                preset = PRESET_LUT[type][ipo][self.easing]
+            curve.__init__(preset)
 
         nodetree_node_update(curve.node_identifier, curve)
 
