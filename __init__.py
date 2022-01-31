@@ -250,7 +250,7 @@ def _bell(curve: BLCMAP_CurveDTO, ramp: typing.Optional[str]='BOTH') -> BLCMAP_C
             head.clear()
             head.append(BLCMAP_CurvePointDTO((0.0, 1.0), 'VECTOR'))
 
-    return BLCMAP_Curve(head + tail)
+    return BLCMAP_CurveDTO(head + tail)
 
 bell_linear = _bell(linear)
 bell_sine_in = _bell(sine_in)
