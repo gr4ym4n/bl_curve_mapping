@@ -79,7 +79,7 @@ quad_in_out = BLCMAP_CurveDTO([
 
 cubic_in = BLCMAP_CurveDTO([
     BLCMAP_CurvePointDTO((0.0, 0.0) , 'AUTO'),
-    BLCMAP_CurvePointDTO((0.8, 0.97), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.2, 0.03), 'AUTO_CLAMPED'),
     BLCMAP_CurvePointDTO((1.0, 1.0) , 'AUTO'),
     ])
 
@@ -234,74 +234,375 @@ falloff_quint_in_out = BLCMAP_CurveDTO([
     BLCMAP_CurvePointDTO((1.0, 0.0)    , 'AUTO'),
     ])
 
-def _bell(curve: BLCMAP_CurveDTO, ramp: typing.Optional[str]='BOTH') -> BLCMAP_CurveDTO:
-    head = []
-    tail = []
+bell_linear = BLCMAP_CurveDTO([
+    BLCMAP_CurvePointDTO((0.0, 0.0), 'VECTOR'),
+    BLCMAP_CurvePointDTO((0.5, 1.0), 'VECTOR'),
+    BLCMAP_CurvePointDTO((1.0, 0.0), 'VECTOR'),
+    ])
 
-    for point in curve.points:
-        head.append(BLCMAP_CurvePointDTO((point.location[0]*0.5, point.location[1]), point.handle_type))
+bell_sine_in = BLCMAP_CurveDTO([
+    BLCMAP_CurvePointDTO((0.0, 0.0)  , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.05, 0.03), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.5, 1.0)  , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.95, 0.03), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((1.0, 0.0)  , 'AUTO_CLAMPED'),
+    ])
 
-    if ramp == 'HEAD':
-        tail.append(BLCMAP_CurvePointDTO((1.0, 1.0), 'VECTOR'))
-    else:
-        for point in reversed(head[:-1]):
-            tail.append(BLCMAP_CurvePointDTO((1.0-point.location[0], point.location[1]), point.handle_type))
-        if ramp == 'TAIL':
-            head.clear()
-            head.append(BLCMAP_CurvePointDTO((0.0, 1.0), 'VECTOR'))
+bell_sine_out = BLCMAP_CurveDTO([
+    BLCMAP_CurvePointDTO((0.0, 0.0)  , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.45, 0.97), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.5, 1.0)  , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.55, 0.97), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((1.0, 0.0)  , 'AUTO_CLAMPED'),
+    ])
 
-    return BLCMAP_CurveDTO(head + tail)
+bell_sine_in_out = BLCMAP_CurveDTO([
+    BLCMAP_CurvePointDTO((0.0, 0.0)  , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.05, 0.03), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.45, 0.97), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.5, 1.0)  , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.55, 0.97), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.95, 0.03), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((1.0, 0.0)  , 'AUTO_CLAMPED'),
+    ])
 
-bell_linear = _bell(linear)
-bell_sine_in = _bell(sine_in)
-bell_sine_out = _bell(sine_out)
-bell_sine_in_out = _bell(sine_in_out)
-bell_quad_in = _bell(quad_in)
-bell_quad_out = _bell(quad_out)
-bell_quad_in_out = _bell(quad_in_out)
-bell_cubic_in = _bell(cubic_in)
-bell_cubic_out = _bell(cubic_out)
-bell_cubic_in_out = _bell(cubic_in_out)
-bell_quart_in = _bell(quart_in)
-bell_quart_out = _bell(quart_out)
-bell_quart_in_out = _bell(quart_in_out)
-bell_quint_in = _bell(quint_in)
-bell_quint_out = _bell(quint_out)
-bell_quint_in_out = _bell(quint_in_out)
+bell_quad_in = BLCMAP_CurveDTO([
+    BLCMAP_CurvePointDTO((0.0, 0.0)    , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.075, 0.045), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.5, 1.0)    , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.925, 0.045), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((1.0, 0.0)    , 'AUTO_CLAMPED'),
+    ])
 
-bell_linear_head = _bell(linear, 'HEAD')
-bell_sine_in_head = _bell(sine_in, 'HEAD')
-bell_sine_out_head = _bell(sine_out, 'HEAD')
-bell_sine_in_out_head = _bell(sine_in_out, 'HEAD')
-bell_quad_in_head = _bell(quad_in, 'HEAD')
-bell_quad_out_head = _bell(quad_out, 'HEAD')
-bell_quad_in_out_head = _bell(quad_in_out, 'HEAD')
-bell_cubic_in_head = _bell(cubic_in, 'HEAD')
-bell_cubic_out_head = _bell(cubic_out, 'HEAD')
-bell_cubic_in_out_head = _bell(cubic_in_out, 'HEAD')
-bell_quart_in_head = _bell(quart_in, 'HEAD')
-bell_quart_out_head = _bell(quart_out, 'HEAD')
-bell_quart_in_out_head = _bell(quart_in_out, 'HEAD')
-bell_quint_in_head = _bell(quint_in, 'HEAD')
-bell_quint_out_head = _bell(quint_out, 'HEAD')
-bell_quint_in_out_head = _bell(quint_in_out, 'HEAD')
+bell_quad_out = BLCMAP_CurveDTO([
+    BLCMAP_CurvePointDTO((0.0, 0.0)    , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.425, 0.955), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.5, 1.0)    , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.575, 0.955), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((1.0, 0.0)    , 'AUTO_CLAMPED'),
+    ])
 
-bell_linear_tail = _bell(linear, 'TAIL')
-bell_sine_in_tail = _bell(sine_in, 'TAIL')
-bell_sine_out_tail = _bell(sine_out, 'TAIL')
-bell_sine_in_out_tail = _bell(sine_in_out, 'TAIL')
-bell_quad_in_tail = _bell(quad_in, 'TAIL')
-bell_quad_out_tail = _bell(quad_out, 'TAIL')
-bell_quad_in_out_tail = _bell(quad_in_out, 'TAIL')
-bell_cubic_in_tail = _bell(cubic_in, 'TAIL')
-bell_cubic_out_tail = _bell(cubic_out, 'TAIL')
-bell_cubic_in_out_tail = _bell(cubic_in_out, 'TAIL')
-bell_quart_in_tail = _bell(quart_in, 'TAIL')
-bell_quart_out_tail = _bell(quart_out, 'TAIL')
-bell_quart_in_out_tail = _bell(quart_in_out, 'TAIL')
-bell_quint_in_tail = _bell(quint_in, 'TAIL')
-bell_quint_out_tail = _bell(quint_out, 'TAIL')
-bell_quint_in_out_tail = _bell(quint_in_out, 'TAIL')
+bell_quad_in_out = BLCMAP_CurveDTO([
+    BLCMAP_CurvePointDTO((0.0, 0.0)    , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.075, 0.045), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.425, 0.955), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.5, 1.0)    , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.575, 0.955), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.925, 0.045), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((1.0, 0.0)    , 'AUTO_CLAMPED'),
+    ])
+
+bell_cubic_in = BLCMAP_CurveDTO([
+    BLCMAP_CurvePointDTO((0.0, 0.0)  , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.1, 0.03), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.5, 1.0)  , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.9, 0.03), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((1.0, 0.0)  , 'AUTO_CLAMPED'),
+    ])
+
+bell_cubic_out = BLCMAP_CurveDTO([
+    BLCMAP_CurvePointDTO((0.0, 0.0) , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.4, 0.97), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.5, 1.0) , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.6, 0.97), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.0, 0.0) , 'AUTO_CLAMPED'),
+    ])
+
+bell_cubic_in_out = BLCMAP_CurveDTO([
+    BLCMAP_CurvePointDTO((0.0, 0.0) , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.1, 0.03), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.4, 0.97), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.5, 1.0) , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.6, 0.97), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.9, 0.03), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.0, 0.0) , 'AUTO_CLAMPED'),
+    ])
+
+bell_quart_in = BLCMAP_CurveDTO([
+    BLCMAP_CurvePointDTO((0.0, 0.0)   , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.125, 0.03), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.5, 1.0)   , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.875, 0.03), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((1.0, 0.0)   , 'AUTO_CLAMPED'),
+    ])
+
+bell_quart_out = BLCMAP_CurveDTO([
+    BLCMAP_CurvePointDTO((0.0, 0.0)   , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.375, 0.97), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.5, 1.0)   , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.625, 0.97), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((1.0, 0.0)   , 'AUTO_CLAMPED'),
+    ])
+
+bell_quart_in_out = BLCMAP_CurveDTO([
+    BLCMAP_CurvePointDTO((0.0, 0.0)   , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.125, 0.03), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.375, 0.97), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.5, 1.0)   , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.625, 0.97), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.875, 0.03), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((1.0, 0.0)   , 'AUTO_CLAMPED'),
+    ])
+
+bell_quint_in = BLCMAP_CurveDTO([
+    BLCMAP_CurvePointDTO((0.0, 0.0)     , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.1375, 0.025), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.5, 1.0)     , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.8625, 0.025), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((1.0, 0.0)     , 'AUTO_CLAMPED'),
+    ])
+
+bell_quint_out = BLCMAP_CurveDTO([
+    BLCMAP_CurvePointDTO((0.0, 0.0)     , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.3625, 0.975), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.5, 1.0)     , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.6375, 0.975), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((1.0, 0.0)     , 'AUTO_CLAMPED'),
+    ])
+
+bell_quint_in_out = BLCMAP_CurveDTO([
+    BLCMAP_CurvePointDTO((0.0, 0.0)     , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.1375, 0.025), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.3625, 0.975), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.725, 0.975) , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.5, 1.0)     , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.6375, 0.975), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.8625, 0.025), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((1.0, 0.0)     , 'AUTO_CLAMPED'),
+    ])
+
+bell_linear_head = BLCMAP_CurveDTO([
+    BLCMAP_CurvePointDTO((0.0, 0.0), 'VECTOR'),
+    BLCMAP_CurvePointDTO((0.5, 1.0), 'VECTOR'),
+    BLCMAP_CurvePointDTO((1.0, 1.0), 'VECTOR'),
+    ])
+
+bell_sine_in_head = BLCMAP_CurveDTO([
+    BLCMAP_CurvePointDTO((0.0, 0.0)  , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.05, 0.03), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.5, 1.0)  , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((1.0, 1.0)  , 'AUTO_CLAMPED'),
+    ])
+
+bell_sine_out_head = BLCMAP_CurveDTO([
+    BLCMAP_CurvePointDTO((0.0, 0.0)  , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.45, 0.97), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.5, 1.0)  , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((1.0, 1.0)  , 'AUTO_CLAMPED'),
+    ])
+
+bell_sine_in_out_head = BLCMAP_CurveDTO([
+    BLCMAP_CurvePointDTO((0.0, 0.0)  , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.05, 0.03), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.45, 0.97), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.5, 1.0)  , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((1.0, 1.0)  , 'AUTO_CLAMPED'),
+    ])
+
+bell_quad_in_head = BLCMAP_CurveDTO([
+    BLCMAP_CurvePointDTO((0.0, 0.0)    , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.075, 0.045), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.5, 1.0)    , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((1.0, 1.0)    , 'AUTO_CLAMPED'),
+    ])
+
+bell_quad_out_head = BLCMAP_CurveDTO([
+    BLCMAP_CurvePointDTO((0.0, 0.0)    , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.425, 0.955), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.5, 1.0)    , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((1.0, 0.0)    , 'AUTO_CLAMPED'),
+    ])
+
+bell_quad_in_out_head = BLCMAP_CurveDTO([
+    BLCMAP_CurvePointDTO((0.0, 0.0)    , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.075, 0.045), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.425, 0.955), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.5, 1.0)    , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((1.0, 1.0)    , 'AUTO_CLAMPED'),
+    ])
+
+bell_cubic_in_head = BLCMAP_CurveDTO([
+    BLCMAP_CurvePointDTO((0.0, 0.0) , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.1, 0.03), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.5, 1.0) , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((1.0, 1.0) , 'AUTO_CLAMPED'),
+    ])
+
+bell_cubic_out_head = BLCMAP_CurveDTO([
+    BLCMAP_CurvePointDTO((0.0, 0.0) , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.4, 0.97), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.5, 1.0) , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((1.0, 1.0) , 'AUTO_CLAMPED'),
+    ])
+
+bell_cubic_in_out_head = BLCMAP_CurveDTO([
+    BLCMAP_CurvePointDTO((0.0, 0.0) , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.1, 0.03), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.4, 0.97), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.5, 1.0) , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((1.0, 1.0) , 'AUTO_CLAMPED'),
+    ])
+
+bell_quart_in_head = BLCMAP_CurveDTO([
+    BLCMAP_CurvePointDTO((0.0, 0.0)   , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.125, 0.03), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.5, 1.0)   , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((1.0, 1.0)   , 'AUTO_CLAMPED'),
+    ])
+
+bell_quart_out_head = BLCMAP_CurveDTO([
+    BLCMAP_CurvePointDTO((0.0, 0.0)   , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.375, 0.97), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.5, 1.0)   , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((1.0, 1.0)   , 'AUTO_CLAMPED'),
+    ])
+
+bell_quart_in_out_head = BLCMAP_CurveDTO([
+    BLCMAP_CurvePointDTO((0.0, 0.0)   , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.125, 0.03), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.375, 0.97), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.5, 1.0)   , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((1.0, 1.0)   , 'AUTO_CLAMPED'),
+    ])
+
+bell_quint_in_head = BLCMAP_CurveDTO([
+    BLCMAP_CurvePointDTO((0.0, 0.0)     , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.1375, 0.025), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.5, 1.0)     , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((1.0, 1.0)     , 'AUTO_CLAMPED'),
+    ])
+
+bell_quint_out_head = BLCMAP_CurveDTO([
+    BLCMAP_CurvePointDTO((0.0, 0.0)     , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.3625, 0.975), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.5, 1.0)     , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((1.0, 1.0)     , 'AUTO_CLAMPED'),
+    ])
+
+bell_quint_in_out_head = BLCMAP_CurveDTO([
+    BLCMAP_CurvePointDTO((0.0, 0.0)     , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.1375, 0.025), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.3625, 0.975), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.725, 0.975) , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.5, 1.0)     , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((1.0, 1.0)     , 'AUTO_CLAMPED'),
+    ])
+
+bell_linear_tail = BLCMAP_CurveDTO([
+    BLCMAP_CurvePointDTO((0.0, 1.0), 'VECTOR'),
+    BLCMAP_CurvePointDTO((0.5, 1.0), 'VECTOR'),
+    BLCMAP_CurvePointDTO((1.0, 0.0), 'VECTOR'),
+    ])
+
+bell_sine_in_tail = BLCMAP_CurveDTO([
+    BLCMAP_CurvePointDTO((0.0, 1.0)  , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.5, 1.0)  , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.95, 0.03), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((1.0, 1.0)  , 'AUTO_CLAMPED'),
+    ])
+
+bell_sine_out_tail = BLCMAP_CurveDTO([
+    BLCMAP_CurvePointDTO((0.0, 1.0)  , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.5, 1.0)  , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.55, 0.97), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((1.0, 0.0)  , 'AUTO_CLAMPED'),
+    ])
+
+bell_sine_in_out_tail = BLCMAP_CurveDTO([
+    BLCMAP_CurvePointDTO((0.0, 1.0)  , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.5, 1.0)  , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.55, 0.97), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.95, 0.03), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((1.0, 0.0)  , 'AUTO_CLAMPED'),
+    ])
+
+bell_quad_in_tail = BLCMAP_CurveDTO([
+    BLCMAP_CurvePointDTO((0.0, 1.0)    , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.5, 1.0)    , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.925, 0.045), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((1.0, 0.0)    , 'AUTO_CLAMPED'),
+    ])
+
+bell_quad_out_tail = BLCMAP_CurveDTO([
+    BLCMAP_CurvePointDTO((0.0, 1.0)    , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.5, 1.0)    , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.575, 0.955), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((1.0, 0.0)    , 'AUTO_CLAMPED'),
+    ])
+
+bell_quad_in_out_tail = BLCMAP_CurveDTO([
+    BLCMAP_CurvePointDTO((0.0, 1.0)    , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.5, 1.0)    , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.575, 0.955), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.925, 0.045), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((1.0, 0.0)    , 'AUTO_CLAMPED'),
+    ])
+
+bell_cubic_in_tail = BLCMAP_CurveDTO([
+    BLCMAP_CurvePointDTO((0.0, 1.0) , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.5, 1.0) , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.9, 0.03), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((1.0, 0.0) , 'AUTO_CLAMPED'),
+    ])
+
+bell_cubic_out_tail = BLCMAP_CurveDTO([
+    BLCMAP_CurvePointDTO((0.0, 1.0) , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.5, 1.0) , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.6, 0.97), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.0, 0.0) , 'AUTO_CLAMPED'),
+    ])
+
+bell_cubic_in_out_tail = BLCMAP_CurveDTO([
+    BLCMAP_CurvePointDTO((0.0, 1.0) , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.5, 1.0) , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.6, 0.97), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.9, 0.03), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.0, 0.0) , 'AUTO_CLAMPED'),
+    ])
+
+bell_quart_in_tail = BLCMAP_CurveDTO([
+    BLCMAP_CurvePointDTO((0.0, 1.0)   , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.5, 1.0)   , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.875, 0.03), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((1.0, 0.0)   , 'AUTO_CLAMPED'),
+    ])
+
+bell_quart_out_tail = BLCMAP_CurveDTO([
+    BLCMAP_CurvePointDTO((0.0, 1.0)   , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.5, 1.0)   , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.625, 0.97), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((1.0, 0.0)   , 'AUTO_CLAMPED'),
+    ])
+
+bell_quart_in_out_tail = BLCMAP_CurveDTO([
+    BLCMAP_CurvePointDTO((0.0, 1.0)   , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.5, 1.0)   , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.625, 0.97), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.875, 0.03), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((1.0, 0.0)   , 'AUTO_CLAMPED'),
+    ])
+
+bell_quint_in_tail = BLCMAP_CurveDTO([
+    BLCMAP_CurvePointDTO((0.0, 1.0)     , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.5, 1.0)     , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.8625, 0.025), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((1.0, 0.0)     , 'AUTO_CLAMPED'),
+    ])
+
+bell_quint_out_tail = BLCMAP_CurveDTO([
+    BLCMAP_CurvePointDTO((0.0, 1.0)     , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.5, 1.0)     , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.6375, 0.975), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((1.0, 0.0)     , 'AUTO_CLAMPED'),
+    ])
+
+bell_quint_in_out_tail = BLCMAP_CurveDTO([
+    BLCMAP_CurvePointDTO((0.0, 1.0)     , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.5, 1.0)     , 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.6375, 0.975), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((0.8625, 0.025), 'AUTO_CLAMPED'),
+    BLCMAP_CurvePointDTO((1.0, 0.0)     , 'AUTO_CLAMPED'),
+    ])
 
 PRESET_LUT = {
     'SIGMOID': {
@@ -1221,10 +1522,10 @@ def draw_curve_manager_ui(layout: bpy.types.UILayout, manager: BCLMAP_CurveManag
         if ipo == 'CURVE':
             subrow.operator(BLCMAP_OT_curve_edit.bl_idname, text="Edit")
         else:
-            if type == 'BELL':
-                subrow.prop(manager, 'ramp', text="")
             if ipo != 'LINEAR':
                 subrow.prop(manager, "easing", text="")
+            if type == 'BELL':
+                subrow.prop(manager, 'ramp', text="", icon='DOWNARROW_HLT')
 
     row.separator()
 
