@@ -1031,16 +1031,15 @@ def keyframe_points_assign(points: bpy.types.FCurveKeyframePoints,
 def points_offset(points: typing.Iterable['BLCMAP_CurvePoint'],
                   offset: float,
                   origin: typing.Optional[float]=0.0) -> None:
-    a = 0.5 if origin == 0.0 else 1.0 / origin + 0.5
-    b = 0.5 if offset == 0.0 else 1.0 / offset * 0.5
+    a = (min(max(origin, -0.999), 0.999) - -1.0) * 0.5
+    b = (min(max(offset, -0.999), 0.999) - -1.0) * 0.5
     if a != b:
-        d = 1.0 - b
         for p in points:
             x, y = p.location
             if x < b:
-                x = x - b if a == 0.0 else (x - b) / a
+                x = (x * b) / a
             else:
-                x = ((x - a) * d) + b
+                x = ((x-a) * (1.0-b)) / (1.0-a) + b
             p["location"] = (x, y)
 
 #endregion Utilities
@@ -1367,7 +1366,7 @@ class BCLMAP_CurveManager:
         name="Easing",
         items=[
             ('EASE_IN'    , "In"      , "Ease in"        , 'NONE', 0),
-            ('EASE_IN'    , "Out"     , "Ease out"       , 'NONE', 1),
+            ('EASE_OUT'   , "Out"     , "Ease out"       , 'NONE', 1),
             ('EASE_IN_OUT', "In & Out", "Ease in and out", 'NONE', 2),
             ],
         default='EASE_IN_OUT',
