@@ -1546,8 +1546,6 @@ def draw_curve_manager_ui(layout: bpy.types.UILayout, manager: BCLMAP_CurveManag
     row.ui_units_y = 0.01
     row.context_pointer_set("curve", manager.curve)
     row.operator_context = 'INVOKE_DEFAULT'
-
-    row.prop(manager, "interpolation", text="")
     
     type = manager.curve_type
     ipo = manager.interpolation
@@ -1555,12 +1553,14 @@ def draw_curve_manager_ui(layout: bpy.types.UILayout, manager: BCLMAP_CurveManag
         subrow = row.row(align=True)
         subrow.ui_units_x = 6.0
         if ipo == 'CURVE':
+            row.prop(manager, "interpolation", text="")
             subrow.operator(BLCMAP_OT_curve_edit.bl_idname, text="Edit")
         else:
-            if ipo != 'LINEAR':
-                subrow.prop(manager, "easing", text="")
             if type == 'BELL':
                 subrow.prop(manager, 'ramp', text="", icon='NORMALIZE_FCURVES', icon_only=True)
+            row.prop(manager, "interpolation", text="")
+            if ipo != 'LINEAR':
+                subrow.prop(manager, "easing", text="")
 
     row.separator()
 
