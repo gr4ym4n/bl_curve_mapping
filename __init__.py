@@ -1,4 +1,5 @@
 
+import math
 import typing
 import dataclasses
 import uuid
@@ -915,22 +916,6 @@ def _calc_bezier_handles(p2, ht, h1, h2, prev=None, next=None) -> None:
         h2[0] = p2[0] + dvec_b[0] * (1.0/3.0)
         h2[1] = p2[1] + dvec_b[1] * (1.0/3.0)
 
-def range_x(points: typing.Iterable[typing.Union['BLCMAP_CurvePoint', BLCMAP_CurvePointDTO, bpy.types.CurveMapPoint]],
-           range_: typing.Tuple[float, float]) -> typing.List[BLCMAP_CurvePointDTO]:
-    data = [
-        (mathutils.Vector(pt.location), pt.handle_type, pt.select) for pt in points
-        ]
-    a, b = range_
-    if a > b:
-        a, b = b, a
-        for item in data:
-            item[0][0] = 1.0 - item[0][0]
-        data.reverse()
-    d = b - a
-    for item in data:
-        item[0][0] = a + item[0][0] * d
-    return [BLCMAP_CurvePointDTO(*item) for item in data]
-
 def to_bezier(points: typing.Iterable[typing.Union['BLCMAP_CurvePoint', bpy.types.CurveMapPoint]],
               x_range: typing.Optional[typing.Tuple[float, float]]=None,
               y_range: typing.Optional[typing.Tuple[float, float]]=None,
@@ -1042,6 +1027,20 @@ def keyframe_points_assign(points: bpy.types.FCurveKeyframePoints,
         point.handle_right_type = frame.handle_right_type
         point.handle_left = frame.handle_left
         point.handle_right = frame.handle_right
+
+def points_offset(points: typing.Iterable['BLCMAP_CurvePoint'],
+                  offset: float,
+                  origin: typing.Optional[float]=0.0) -> None:
+    a = 1.0 / origin + 0.5
+    b = 1.0 / offset + 0.5
+    d = 1.0 - b
+    for p in points:
+        x, y = p.location
+        if x < b:
+            x = (x - b) / a
+        else:
+            x = ((x - a) * d) + b
+        p["location"] = (x, y)
 
 #endregion Utilities
 
@@ -1336,6 +1335,15 @@ class BLCMAP_Curve(bpy.types.PropertyGroup):
 
 class BCLMAP_CurveManager:
 
+    def get_offset(self) -> float:
+        return self.get("offset", 0.0)
+
+    def set_offset(self, value: float) -> None:
+        cache = self.get_offset()
+        self["offset"] = value
+        points_offset(self.curve.points, value, cache)
+        self.update()
+
     curve: bpy.props.PointerProperty(
         name="Curve",
         type=BLCMAP_Curve,
@@ -1383,6 +1391,15 @@ class BCLMAP_CurveManager:
         update=lambda self, context: self.update(context),
         )
 
+    offset: bpy.props.FloatProperty(
+        name="Offset",
+        min=-1.0,
+        max=1.0,
+        get=get_offset,
+        set=set_offset,
+        options=set()
+        )
+
     ramp: bpy.props.EnumProperty(
         name="Ramp",
         items=[
@@ -1421,7 +1438,9 @@ class BCLMAP_CurveManager:
             else:
                 preset = PRESET_LUT[type][ipo][self.easing]
             curve.__init__(preset)
-
+            offset = self.get_offset()
+            if offset != 0.0:
+                points_offset(curve.points, offset)
         nodetree_node_update(curve.node_identifier, curve)
 
 
