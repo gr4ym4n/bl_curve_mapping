@@ -1426,6 +1426,8 @@ class BCLMAP_CurveManager:
                 self["easing"] = ('EASE_IN', 'EASE_OUT', 'EASE_IN_OUT').index(value)
             elif key == "ramp":
                 self["ramp"] = ('HEAD', 'TAIL', 'BOTH').index(value)
+            else:
+                self[key] = value
         BCLMAP_CurveManager.update(self)
 
     def update(self, context: typing.Optional[bpy.types.Context]=None) -> None:
