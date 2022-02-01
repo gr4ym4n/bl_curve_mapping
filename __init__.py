@@ -1557,7 +1557,7 @@ def draw_curve_manager_ui(layout: bpy.types.UILayout, manager: BCLMAP_CurveManag
             subrow.operator(BLCMAP_OT_curve_edit.bl_idname, text="Edit")
         else:
             if type == 'BELL':
-                subrow.prop(manager, 'ramp', text="", icon='NORMALIZE_FCURVES', icon_only=True)
+                row.prop(manager, 'ramp', text="", icon='NORMALIZE_FCURVES', icon_only=True)
             row.prop(manager, "interpolation", text="")
             if ipo != 'LINEAR':
                 subrow.prop(manager, "easing", text="")
