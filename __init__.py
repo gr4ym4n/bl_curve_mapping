@@ -1363,9 +1363,9 @@ class BCLMAP_CurveManager:
     easing: bpy.props.EnumProperty(
         name="Easing",
         items=[
-            ('EASE_IN'    , "In"      , "Ease in"        , 'NONE', 0),
-            ('EASE_OUT'   , "Out"     , "Ease out"       , 'NONE', 1),
-            ('EASE_IN_OUT', "In & Out", "Ease in and out", 'NONE', 2),
+            ('EASE_IN'    , "In"      , "Ease in"        , 'IPO_EASE_IN'    , 0),
+            ('EASE_OUT'   , "Out"     , "Ease out"       , 'IPO_EASE_OUT'   , 1),
+            ('EASE_IN_OUT', "In & Out", "Ease in and out", 'IPO_EASE_IN_OUT', 2),
             ],
         default='EASE_IN_OUT',
         options=set(),
