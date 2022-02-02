@@ -1557,9 +1557,7 @@ def draw_curve_manager_ui(layout: bpy.types.UILayout, manager: BCLMAP_CurveManag
 
     if intrp == 'CURVE':
         split.prop(manager, "interpolation", text="")
-        row = split.row()
-        row.alignment = 'RIGHT'
-        row.operator(BLCMAP_OT_curve_edit.bl_idname, text="Edit")
+        split.operator(BLCMAP_OT_curve_edit.bl_idname, text="Edit")
     
     else:
         ctype = manager.curve_type
