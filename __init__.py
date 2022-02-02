@@ -1541,33 +1541,38 @@ class BLCMAP_OT_curve_edit(bpy.types.Operator):
 ###################################################################################################
 
 def draw_curve_manager_ui(layout: bpy.types.UILayout, manager: BCLMAP_CurveManager) -> None:
-    box = layout.box()
-    row = box.row(align=True)
-    row.ui_units_y = 0.01
+
+    row = layout.row()
     row.context_pointer_set("curve", manager.curve)
     row.operator_context = 'INVOKE_DEFAULT'
     
-    type = manager.curve_type
-    ipo = manager.interpolation
-    if ipo != 'LINEAR' or type == 'BELL':
-        subrow = row.row(align=True)
-        subrow.ui_units_x = 6.0
-        if ipo == 'CURVE':
+    box = row.column().box()
+    ops = row.column(align=True)
+
+    row = box.row()
+    row.ui_units_y = 0.01
+
+    intrp = manager.interpolation
+    split = row.split(factor=0.6)
+
+    if intrp == 'CURVE':
+        split.prop(manager, "interpolation", text="")
+        row = split.row()
+        row.alignment = 'RIGHT'
+        row.operator(BLCMAP_OT_curve_edit.bl_idname, text="Edit")
+    
+    else:
+        ctype = manager.curve_type
+
+        if ctype == 'BELL':
+            row = split.row()
+            row.prop(manager, 'ramp', text="", icon='NORMALIZE_FCURVES', icon_only=True)
             row.prop(manager, "interpolation", text="")
-            subrow.operator(BLCMAP_OT_curve_edit.bl_idname, text="Edit")
         else:
-            if type == 'BELL':
-                row.prop(manager, 'ramp', text="", icon='NORMALIZE_FCURVES', icon_only=True)
-            row.prop(manager, "interpolation", text="")
-            if ipo != 'LINEAR':
-                subrow.prop(manager, "easing", text="")
+            split.prop(manager, "interpolation", text="")
 
-    row.separator()
-
-    subrow = row.row(align=True)
-    subrow.alignment = 'RIGHT'
-    subrow.operator(BLCMAP_OT_curve_copy.bl_idname, icon='COPYDOWN', text="")
-    subrow.operator(BLCMAP_OT_curve_paste.bl_idname, icon='PASTEDOWN', text="")
+        if intrp != 'LINEAR':
+            split.prop(manager, "easing", text="")
 
     curve = manager.curve
 
@@ -1576,5 +1581,8 @@ def draw_curve_manager_ui(layout: bpy.types.UILayout, manager: BCLMAP_CurveManag
     col.enabled = False
     col.template_curve_mapping(nodetree_node_ensure(curve.get_node_identifier(), curve), "mapping")
     col.separator(factor=0.3)
+
+    ops.operator(BLCMAP_OT_curve_copy.bl_idname, icon='COPYDOWN', text="")
+    ops.operator(BLCMAP_OT_curve_paste.bl_idname, icon='PASTEDOWN', text="")
 
 #endregion UI Utilities
