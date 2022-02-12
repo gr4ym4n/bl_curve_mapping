@@ -1182,7 +1182,6 @@ class BLCMAP_CurvePoints(bpy.types.PropertyGroup):
                 curve.update()
 
     def __init__(self, data: typing.Sequence[typing.Union[BLCMAP_CurvePointDTO, BLCMAP_CurvePoint, bpy.types.CurveMapPoint]]) -> None:
-        assert len(data) >= 2
         points = self.points__internal__
         points.clear()
         for item in data:
