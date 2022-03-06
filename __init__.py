@@ -1539,6 +1539,30 @@ class BLCMAP_OT_curve_edit(bpy.types.Operator):
 
         return {'FINISHED'}
 
+class BLCMAP_OT_node_ensure(bpy.types.Operator):
+
+    bl_idname = "blcmap.node_ensure"
+    bl_label = "Edit Curve"
+    bl_description = "Edit the curve"
+    bl_options = {'INTERNAL'}
+
+    @classmethod
+    def poll(cls, context: bpy.types.Context) -> bool:
+        return isinstance(getattr(context, "curve", None), BLCMAP_Curve)
+
+    def execute(self, context: bpy.types.Context) -> typing.Set[str]:
+
+        curve: typing.Optional[BLCMAP_Curve] = getattr(context, "curve", None)
+        if not isinstance(curve, BLCMAP_Curve):
+            self.report({'ERROR'}, f'{self.__class__.__name__} Invalid context.curve {curve.__class__.__name__}')
+            return {'CANCELLED'}
+
+        nodetree_node_ensure(curve.node_identifier, curve)
+
+        return {'FINISHED'}
+
+    
+
 #endregion Operators
 
 #region UI Utilities
@@ -1553,38 +1577,56 @@ def draw_curve_manager_ui(layout: bpy.types.UILayout, manager: BCLMAP_CurveManag
     box = row.column().box()
     ops = row.column(align=True)
 
-    row = box.row()
-    row.ui_units_y = 0.01
+    curve: BLCMAP_Curve = manager.curve
 
-    intrp = manager.interpolation
-    split = row.split(factor=0.6)
 
-    if intrp == 'CURVE':
-        split.prop(manager, "interpolation", text="")
-        split.operator(BLCMAP_OT_curve_edit.bl_idname, text="Edit")
+    if nodetree_node_exists(curve.node_identifier):
+        row = box.row()
+        row.ui_units_y = 0.01
+
+        intrp = manager.interpolation
+        split = row.split(factor=0.6)
+
+        if intrp == 'CURVE':
+            split.prop(manager, "interpolation", text="")
+            split.operator(BLCMAP_OT_curve_edit.bl_idname, text="Edit")
+        
+        else:
+            ctype = manager.curve_type
+
+            if ctype == 'BELL':
+                row = split.row()
+                row.prop(manager, 'ramp', text="", icon='NORMALIZE_FCURVES', icon_only=True)
+                row.prop(manager, "interpolation", text="")
+            else:
+                split.prop(manager, "interpolation", text="")
+
+            if intrp != 'LINEAR':
+                split.prop(manager, "easing", text="")
+
+        curve = manager.curve
+
+        col = box.column()
+        col.scale_x = 0.01
+        col.enabled = False
+        col.template_curve_mapping(nodetree_node_ensure(curve.get_node_identifier(), curve), "mapping")
+        col.separator(factor=0.3)
+
+        ops.operator(BLCMAP_OT_curve_copy.bl_idname, icon='COPYDOWN', text="")
+        ops.operator(BLCMAP_OT_curve_paste.bl_idname, icon='PASTEDOWN', text="")
     
     else:
-        ctype = manager.curve_type
+        box.separator(factor=2.0)
 
-        if ctype == 'BELL':
-            row = split.row()
-            row.prop(manager, 'ramp', text="", icon='NORMALIZE_FCURVES', icon_only=True)
-            row.prop(manager, "interpolation", text="")
-        else:
-            split.prop(manager, "interpolation", text="")
+        row = box.row()
+        row.alignment = 'CENTER'
+        row.label(icon='ERROR', text="Missing Curve")
 
-        if intrp != 'LINEAR':
-            split.prop(manager, "easing", text="")
-
-    curve = manager.curve
-
-    col = box.column()
-    col.scale_x = 0.01
-    col.enabled = False
-    col.template_curve_mapping(nodetree_node_ensure(curve.get_node_identifier(), curve), "mapping")
-    col.separator(factor=0.3)
-
-    ops.operator(BLCMAP_OT_curve_copy.bl_idname, icon='COPYDOWN', text="")
-    ops.operator(BLCMAP_OT_curve_paste.bl_idname, icon='PASTEDOWN', text="")
+        row = box.row()
+        row.alignment = 'CENTER'
+        row.operator(BLCMAP_OT_node_ensure.bl_idname, icon='FILE_REFRESH', text="Reload")
+        
+        box.separator(factor=2.0)
+        ops.label(icon='BLANK1')
 
 #endregion UI Utilities
