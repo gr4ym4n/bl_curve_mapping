@@ -786,6 +786,11 @@ def nodetree_get(create: typing.Optional[bool]=True) -> bpy.types.ShaderNodeTree
         tree = bpy.data.node_groups.new(NODE_TREE_NAME, "ShaderNodeTree")
     return tree
 
+def nodetree_node_exists(name: str) -> bool:
+    tree = nodetree_get(create=False)
+    return tree is not None and tree.nodes.get(name) is not None
+
+
 def nodetree_node_update(name: str, data: typing.Union[BLCMAP_CurveDTO, 'BLCMAP_Curve']) -> bpy.types.ShaderNodeVectorCurve:
 
     tree = nodetree_get(create=True)
