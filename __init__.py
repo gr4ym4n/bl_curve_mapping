@@ -1616,17 +1616,9 @@ def draw_curve_manager_ui(layout: bpy.types.UILayout, manager: BCLMAP_CurveManag
         ops.operator(BLCMAP_OT_curve_paste.bl_idname, icon='PASTEDOWN', text="")
     
     else:
-        box.separator(factor=2.0)
-
         row = box.row()
-        row.alignment = 'CENTER'
         row.label(icon='ERROR', text="Missing Curve")
-
-        row = box.row()
-        row.alignment = 'CENTER'
-        row.operator(BLCMAP_OT_node_ensure.bl_idname, icon='FILE_REFRESH', text="Reload")
-        
-        box.separator(factor=2.0)
+        row.operator(BLCMAP_OT_node_ensure.bl_idname, text="Reload")
         ops.label(icon='BLANK1')
 
 #endregion UI Utilities
