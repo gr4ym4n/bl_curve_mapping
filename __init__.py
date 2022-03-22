@@ -1579,8 +1579,7 @@ def draw_curve_manager_ui(layout: bpy.types.UILayout, manager: BCLMAP_CurveManag
 
     curve: BLCMAP_Curve = manager.curve
 
-
-    if nodetree_node_exists(curve.node_identifier):
+    if curve.is_property_set("node_identifier") and nodetree_node_exists(curve.node_identifier):
         row = box.row()
         row.ui_units_y = 0.01
 
