@@ -1542,8 +1542,8 @@ class BLCMAP_OT_curve_edit(bpy.types.Operator):
 class BLCMAP_OT_node_ensure(bpy.types.Operator):
 
     bl_idname = "blcmap.node_ensure"
-    bl_label = "Edit Curve"
-    bl_description = "Edit the curve"
+    bl_label = "Ensure Curve"
+    bl_description = "Ensure the curve exists"
     bl_options = {'INTERNAL'}
 
     @classmethod
