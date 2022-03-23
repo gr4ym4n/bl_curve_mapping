@@ -1361,7 +1361,7 @@ class BCLMAP_CurveManager:
             ],
         default='SIGMOID',
         options=set(),
-        update=lambda self, context: self.update(context)
+        update=lambda self, _: self.update()
         )
 
     easing: bpy.props.EnumProperty(
@@ -1373,7 +1373,7 @@ class BCLMAP_CurveManager:
             ],
         default='EASE_IN_OUT',
         options=set(),
-        update=lambda self, context: self.update(context),
+        update=lambda self, _: self.update(),
         )
 
     interpolation: bpy.props.EnumProperty(
@@ -1390,7 +1390,7 @@ class BCLMAP_CurveManager:
             ],
         default='LINEAR',
         options=set(),
-        update=lambda self, context: self.update(context),
+        update=lambda self, _: self.update(),
         )
 
     offset: bpy.props.FloatProperty(
@@ -1411,7 +1411,7 @@ class BCLMAP_CurveManager:
             ],
         default='BOTH',
         options=set(),
-        update=lambda self, context: self.update(context)
+        update=lambda self, _: self.update()
         )
 
     def __init__(self, **options: typing.Dict[str, typing.Any]) -> None:
@@ -1432,7 +1432,7 @@ class BCLMAP_CurveManager:
                 self[key] = value
         BCLMAP_CurveManager.update(self)
 
-    def update(self, context: typing.Optional[bpy.types.Context]=None) -> None:
+    def update(self) -> None:
         ipo = self.interpolation
         curve: BLCMAP_Curve = self.curve
         if ipo != 'CURVE':
