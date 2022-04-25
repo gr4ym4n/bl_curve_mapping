@@ -1045,6 +1045,22 @@ def points_offset(points: typing.Iterable['BLCMAP_CurvePoint'],
                 x = ((x-a) * (1.0-b)) / (1.0-a) + b
             p["location"] = (x, y)
 
+def check_match(curve: 'BLCMAP_Curve', mapping: bpy.types.CurveMapping) -> bool:
+    if curve.extend != mapping.extend:
+        return True
+    else:
+        cpts = curve.points
+        mpts = mapping.curves[0].points
+        if len(cpts) != len(mpts):
+            return True
+        else:
+            for cpt, mpt in zip(cpts, mpts):
+                aco = cpt.location
+                bco = mpt.location
+                if aco[0] != bco[0] or aco[1] != bco[1]:
+                    return True
+        return False
+
 #endregion Utilities
 
 #region Property Groups
@@ -1280,7 +1296,7 @@ class BLCMAP_Curve(bpy.types.PropertyGroup):
             self["identifier"] = identifier
         return identifier
 
-    def update(self, context: typing.Optional[bpy.types.Curve]=None) -> None:
+    def update(self, _: typing.Optional[bpy.types.Curve]=None) -> None:
         """Ensure points are ordered chronologically"""
 
         points = list(self.points)
@@ -1304,7 +1320,7 @@ class BLCMAP_Curve(bpy.types.PropertyGroup):
             nodetree_node_update(self.node_identifier, self)
         else:
             if isinstance(manager, BCLMAP_CurveManager):
-                manager.update(context)
+                manager.update()
             else:
                 nodetree_node_update(self.node_identifier, self)
 
@@ -1490,55 +1506,6 @@ class BLCMAP_OT_curve_paste(bpy.types.Operator):
         curve.update()
         return {'FINISHED'}
 
-class BLCMAP_OT_curve_edit(bpy.types.Operator):
-
-    bl_idname = "blcmap.curve_edit"
-    bl_label = "Edit Curve"
-    bl_description = "Edit the curve"
-    bl_options = {'INTERNAL', 'UNDO'}
-
-    node = None
-
-    @classmethod
-    def poll(cls, context: bpy.types.Context) -> bool:
-        return isinstance(getattr(context, "curve", None), BLCMAP_Curve)
-
-    def __del__(self) -> None:
-        BLCMAP_OT_curve_edit.node = None
-
-    def invoke(self, context: bpy.types.Context, event: bpy.types.Event) -> typing.Set[str]:
-        curve = getattr(context, "curve", None)
-
-        if not isinstance(curve, BLCMAP_Curve):
-            self.report({'ERROR'}, f'{self.__class__.__name__} Invalid context.curve {curve.__class__.__name__}')
-            return {'CANCELLED'}
-
-        node = nodetree_node_update(self.bl_idname, curve)
-        BLCMAP_OT_curve_edit.node = node
-        return context.window_manager.invoke_props_dialog(self)
-
-    def draw(self, context: bpy.types.Context) -> None:
-        layout = self.layout
-        row = layout.row()
-        row.ui_units_y = 0.01
-        layout.template_curve_mapping(self.node, "mapping")
-
-    def execute(self, context: bpy.types.Context) -> typing.Set[str]:
-
-        curve: typing.Optional[BLCMAP_Curve] = getattr(context, "curve", None)
-        if not isinstance(curve, BLCMAP_Curve):
-            self.report({'ERROR'}, f'{self.__class__.__name__} Invalid context.curve {curve.__class__.__name__}')
-            return {'CANCELLED'}
-
-        node = BLCMAP_OT_curve_edit.node
-        if not isinstance(node, bpy.types.ShaderNodeVectorCurve):
-            self.report({'ERROR'}, f'{self.__class__.__name__} Invalid context.node {node.__class__.__name__}')
-
-        curve.__init__(node.mapping.curves[0], extend=node.mapping.extend)
-        curve.update()
-
-        return {'FINISHED'}
-
 class BLCMAP_OT_node_ensure(bpy.types.Operator):
 
     bl_idname = "blcmap.node_ensure"
@@ -1561,12 +1528,23 @@ class BLCMAP_OT_node_ensure(bpy.types.Operator):
 
         return {'FINISHED'}
 
-    
-
 #endregion Operators
 
 #region UI Utilities
 ###################################################################################################
+
+ACTIVE_CURVES: typing.List[BLCMAP_Curve] = []
+
+def check_active_curves():
+    curve: BLCMAP_Curve
+    for curve in ACTIVE_CURVES:
+        tree = nodetree_get()
+        if tree is not None:
+            node = tree.nodes.get(curve.node_identifier)
+            if node is not None and check_match(curve, node.mapping):
+                curve.__init__(node.mapping.curves[0])
+                curve.update()
+    ACTIVE_CURVES.clear()
 
 def draw_curve_manager_ui(layout: bpy.types.UILayout, manager: BCLMAP_CurveManager) -> None:
 
@@ -1587,8 +1565,11 @@ def draw_curve_manager_ui(layout: bpy.types.UILayout, manager: BCLMAP_CurveManag
         split = row.split(factor=0.6)
 
         if intrp == 'CURVE':
+            if not bpy.app.timers.is_registered(check_active_curves):
+                ACTIVE_CURVES.append(curve)
+                bpy.app.timers.register(check_active_curves, first_interval=1.0)
+
             split.prop(manager, "interpolation", text="")
-            split.operator(BLCMAP_OT_curve_edit.bl_idname, text="Edit")
         
         else:
             ctype = manager.curve_type
