@@ -1463,7 +1463,6 @@ class BCLMAP_CurveManager:
                 points_offset(curve.points, offset)
         nodetree_node_update(curve.node_identifier, curve)
 
-
 #endregion Property Groups
 
 #region Operators
@@ -1528,6 +1527,41 @@ class BLCMAP_OT_node_ensure(bpy.types.Operator):
 
         return {'FINISHED'}
 
+class BLCMAP_OT_handle_type_set(bpy.types.Operator):
+
+    bl_idname = "blcmap.handle_type_set"
+    bl_label = "Handle Type"
+    bl_description = "Set the handle type of selected curve point(s)"
+    bl_options = {'INTERNAL'}
+
+    handle_type: bpy.props.EnumProperty(
+        name="Handle Type",
+        description="Curve interpolation at this point: Bezier or vector",
+        items=[
+            ('AUTO'        , "Auto Handle"        , "", 'HANDLE_AUTO', 0),
+            ('AUTO_CLAMPED', "Auto Clamped Handle", "", 'HANDLE_AUTOCLAMPED', 1),
+            ('VECTOR'      , "Vector Handle"      , "", 'HANDLE_VECTOR', 2),
+            ],
+        default='AUTO',
+        options=set(),
+        )
+
+    @classmethod
+    def poll(cls, context: bpy.types.Context) -> bool:
+        return isinstance(getattr(context, "curve", None), BLCMAP_Curve)
+
+    def execute(self, context: bpy.types.Context) -> typing.Set[str]:
+        tree = nodetree_get()
+        if tree:
+            data: BLCMAP_Curve = getattr(context, "curve")
+            node = tree.nodes.get(data.node_identifier)
+            if node:
+                value = self.handle_type
+                for point in node.mapping.curves[0].points:
+                    if point.select:
+                        point.handle_type = value
+        return {'FINISHED'}
+
 #endregion Operators
 
 #region UI Utilities
@@ -1570,6 +1604,21 @@ def draw_curve_manager_ui(layout: bpy.types.UILayout, manager: BCLMAP_CurveManag
                 bpy.app.timers.register(check_active_curves, first_interval=1.0)
 
             split.prop(manager, "interpolation", text="")
+
+            node = nodetree_get().nodes[curve.node_identifier]
+            seld = {pt.handle_type for pt in node.mapping.curves[0].points if pt.select}
+
+            row = split.row(align=True)
+            row.alignment = 'RIGHT'
+            row.enabled = len(seld) > 0
+
+            for htype, icon in (('AUTO', 'HANDLE_AUTO'),
+                                ('AUTO_CLAMPED', 'HANDLE_AUTOCLAMPED'),
+                                ('VECTOR', 'HANDLE_VECTOR')):
+                row.operator(BLCMAP_OT_handle_type_set.bl_idname,
+                             text="",
+                             icon=icon,
+                             depress=(len(seld) == 1 and htype in seld)).handle_type = htype
         
         else:
             ctype = manager.curve_type
