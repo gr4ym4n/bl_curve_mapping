@@ -1055,10 +1055,13 @@ def check_match(curve: 'BLCMAP_Curve', mapping: bpy.types.CurveMapping) -> bool:
             return True
         else:
             for cpt, mpt in zip(cpts, mpts):
-                aco = cpt.location
-                bco = mpt.location
-                if aco[0] != bco[0] or aco[1] != bco[1]:
+                if cpt.handle_type != mpt.handle_type:
                     return True
+                else:
+                    aco = cpt.location
+                    bco = mpt.location
+                    if aco[0] != bco[0] or aco[1] != bco[1]:
+                        return True
         return False
 
 #endregion Utilities
