@@ -1560,6 +1560,7 @@ class BLCMAP_OT_handle_type_set(bpy.types.Operator):
                 for point in node.mapping.curves[0].points:
                     if point.select:
                         point.handle_type = value
+                node.mapping.update()
         return {'FINISHED'}
 
 #endregion Operators
