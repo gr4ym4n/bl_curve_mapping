@@ -1571,7 +1571,7 @@ class BLCMAP_OT_handle_type_set(bpy.types.Operator):
 #region UI Utilities
 ###################################################################################################
 
-ACTIVE_CURVES: typing.List[BLCMAP_Curve] = []
+ACTIVE_CURVES: typing.Set[BLCMAP_Curve] = set()
 
 def check_active_curves():
     curve: BLCMAP_Curve
@@ -1603,8 +1603,9 @@ def draw_curve_manager_ui(layout: bpy.types.UILayout, manager: BCLMAP_CurveManag
         split = row.split(factor=0.6)
 
         if intrp == 'CURVE':
+            ACTIVE_CURVES.add(curve)
+
             if not bpy.app.timers.is_registered(check_active_curves):
-                ACTIVE_CURVES.append(curve)
                 bpy.app.timers.register(check_active_curves, first_interval=1.0)
 
             split.prop(manager, "interpolation", text="")
