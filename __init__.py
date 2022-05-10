@@ -1530,6 +1530,28 @@ class BLCMAP_OT_node_ensure(bpy.types.Operator):
 
         return {'FINISHED'}
 
+class BCLMAP_OT_curve_point_remove(bpy.types.Operator):
+
+    bl_idname = "blcmap.curve_point_remove"
+    bl_label = "Remove"
+    bl_description = "Remove selected points"
+    bl_options = {'INTERNAL'}
+
+    @classmethod
+    def poll(cls, context: bpy.types.Context) -> bool:
+        return isinstance(getattr(context, "curve", None), BLCMAP_Curve)
+
+    def execute(self, context: bpy.types.Context) -> typing.Set[str]:
+        tree = nodetree_get()
+        if tree:
+            data: BLCMAP_Curve = getattr(context, "curve")
+            node = tree.nodes.get(data.node_identifier)
+            if node:
+                curve = node.mapping.curves[0]
+                for point in reversed(filter(lambda pt: pt.select, curve.points)):
+                    curve.points.remove(point)
+        return {'FINISHED'}
+
 class BLCMAP_OT_handle_type_set(bpy.types.Operator):
 
     bl_idname = "blcmap.handle_type_set"
@@ -1624,6 +1646,11 @@ def draw_curve_manager_ui(layout: bpy.types.UILayout, manager: BCLMAP_CurveManag
                              text="",
                              icon=icon,
                              depress=(len(seld) == 1 and htype in seld)).handle_type = htype
+
+            row.separator()
+            row.operator(BCLMAP_OT_curve_point_remove.bl_idname,
+                         text="",
+                         icon='X')
         
         else:
             ctype = manager.curve_type
