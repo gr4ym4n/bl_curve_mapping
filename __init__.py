@@ -1550,6 +1550,7 @@ class BCLMAP_OT_curve_point_remove(bpy.types.Operator):
                 curve = node.mapping.curves[0]
                 for point in reversed(list(filter(lambda pt: pt.select, curve.points))):
                     curve.points.remove(point)
+                node.mapping.update()
         return {'FINISHED'}
 
 class BLCMAP_OT_handle_type_set(bpy.types.Operator):
