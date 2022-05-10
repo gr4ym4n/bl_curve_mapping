@@ -1548,7 +1548,7 @@ class BCLMAP_OT_curve_point_remove(bpy.types.Operator):
             node = tree.nodes.get(data.node_identifier)
             if node:
                 curve = node.mapping.curves[0]
-                for point in reversed(filter(lambda pt: pt.select, curve.points)):
+                for point in reversed(list(filter(lambda pt: pt.select, curve.points))):
                     curve.points.remove(point)
         return {'FINISHED'}
 
