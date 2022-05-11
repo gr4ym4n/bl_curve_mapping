@@ -784,6 +784,7 @@ def nodetree_get(create: typing.Optional[bool]=True) -> bpy.types.ShaderNodeTree
     tree = bpy.data.node_groups.get(NODE_TREE_NAME)
     if tree is None and create:
         tree = bpy.data.node_groups.new(NODE_TREE_NAME, "ShaderNodeTree")
+        tree.use_fake_user = True
     return tree
 
 def nodetree_node_exists(name: str) -> bool:
