@@ -1403,7 +1403,7 @@ class BCLMAP_CurveManager:
             ('QUAD'  , "Quadratic"   , "Quadratic"       , 'IPO_QUAD'  , 2),
             ('CUBIC' , "Cubic"       , "Cubic"           , 'IPO_CUBIC' , 3),
             ('QUART' , "Quartic"     , "Quartic"         , 'IPO_QUART' , 4),
-            ('QUINT' , "Quntic"      , "Quintic"         , 'IPO_QUINT' , 5),
+            ('QUINT' , "Quintic"     , "Quintic"         , 'IPO_QUINT' , 5),
             None,
             ('CURVE' , "Custom Curve", "Use custom curve", 'FCURVE'    , 6),
             ],
