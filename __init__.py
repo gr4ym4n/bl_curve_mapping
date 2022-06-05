@@ -1719,22 +1719,23 @@ def draw_curve_manager_ui(layout: bpy.types.UILayout, manager: BCLMAP_CurveManag
         node = nodetree_get().nodes[curve.node_identifier]
         selected = {pt.handle_type for pt in node.mapping.curves[0].points if pt.select}
 
-        trailing.alignment = 'CENTER'
-        trailing.enabled = len(selected) > 0
+        subrow = trailing.row(align=True)
+        subrow.alignment = 'CENTER'
+        subrow.enabled = len(selected) > 0
 
         for htype, icon in (('AUTO', 'HANDLE_AUTO'),
                             ('AUTO_CLAMPED', 'HANDLE_AUTOCLAMPED'),
                             ('VECTOR', 'HANDLE_VECTOR')):
             depress = len(selected) == 1 and htype in selected
-            trailing.operator(BLCMAP_OT_handle_type_set.bl_idname,
-                              text="",
-                              icon=icon,
-                              depress=depress).handle_type = htype
-
-        trailing.separator()
-        trailing.operator(BCLMAP_OT_curve_point_remove.bl_idname,
+            subrow.operator(BLCMAP_OT_handle_type_set.bl_idname,
                             text="",
-                            icon='X')
+                            icon=icon,
+                            depress=depress).handle_type = htype
+
+        subrow.separator()
+        subrow.operator(BCLMAP_OT_curve_point_remove.bl_idname,
+                        text="",
+                        icon='X')
 
     else:
         if manager.curve_type == 'BELL':
@@ -1746,10 +1747,11 @@ def draw_curve_manager_ui(layout: bpy.types.UILayout, manager: BCLMAP_CurveManag
             trailing.prop(manager, "easing", text="")
 
     trailing.separator()
-    trailing = trailing.row(align=True)
-    trailing.alignment = 'RIGHT'
-    trailing.operator(BLCMAP_OT_curve_copy.bl_idname, icon='COPYDOWN', text="")
-    trailing.operator(BLCMAP_OT_curve_paste.bl_idname, icon='PASTEDOWN', text="")
+
+    subrow = trailing.row(align=True)
+    subrow.alignment = 'RIGHT'
+    subrow.operator(BLCMAP_OT_curve_copy.bl_idname, icon='COPYDOWN', text="")
+    subrow.operator(BLCMAP_OT_curve_paste.bl_idname, icon='PASTEDOWN', text="")
 
     body = box.column()
     body.scale_x = 0.01
