@@ -1719,6 +1719,7 @@ def draw_curve_manager_ui(layout: bpy.types.UILayout, manager: BCLMAP_CurveManag
         node = nodetree_get().nodes[curve.node_identifier]
         selected = {pt.handle_type for pt in node.mapping.curves[0].points if pt.select}
 
+        trailing.alignment = 'CENTER'
         trailing.enabled = len(selected) > 0
 
         for htype, icon in (('AUTO', 'HANDLE_AUTO'),
