@@ -1719,7 +1719,6 @@ def draw_curve_manager_ui(layout: bpy.types.UILayout, manager: BCLMAP_CurveManag
         node = nodetree_get().nodes[curve.node_identifier]
         selected = {pt.handle_type for pt in node.mapping.curves[0].points if pt.select}
 
-        trailing.alignment = 'RIGHT'
         trailing.enabled = len(selected) > 0
 
         for htype, icon in (('AUTO', 'HANDLE_AUTO'),
@@ -1746,7 +1745,7 @@ def draw_curve_manager_ui(layout: bpy.types.UILayout, manager: BCLMAP_CurveManag
             trailing.prop(manager, "easing", text="")
 
     trailing.separator()
-    trailing = trailing.row()
+    trailing = trailing.row(align=True)
     trailing.alignment = 'RIGHT'
     trailing.operator(BLCMAP_OT_curve_copy.bl_idname, icon='COPYDOWN', text="")
     trailing.operator(BLCMAP_OT_curve_paste.bl_idname, icon='PASTEDOWN', text="")
