@@ -1707,7 +1707,7 @@ def draw_curve_manager_ui(layout: bpy.types.UILayout, manager: BCLMAP_CurveManag
     leading = split.row(align=True)
     trailing = split.row(align=True)
 
-    interpolation = curve.interpolation
+    interpolation = manager.interpolation
 
     if interpolation == 'CURVE':
         ACTIVE_CURVES.add(curve)
