@@ -1731,10 +1731,10 @@ def draw_curve_manager_ui(layout: bpy.types.UILayout, manager: BCLMAP_CurveManag
                               icon=icon,
                               depress=depress).handle_type = htype
 
-            trailing.separator()
-            trailing.operator(BCLMAP_OT_curve_point_remove.bl_idname,
-                              text="",
-                              icon='X')
+        trailing.separator()
+        trailing.operator(BCLMAP_OT_curve_point_remove.bl_idname,
+                            text="",
+                            icon='X')
 
     else:
         if manager.curve_type == 'BELL':
