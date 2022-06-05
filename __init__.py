@@ -1608,80 +1608,154 @@ def check_active_curves():
                 curve.update()
     ACTIVE_CURVES.clear()
 
-def draw_curve_manager_ui(layout: bpy.types.UILayout, manager: BCLMAP_CurveManager) -> None:
+# def draw_curve_manager_ui(layout: bpy.types.UILayout, manager: BCLMAP_CurveManager) -> None:
 
-    row = layout.row()
-    row.context_pointer_set("curve", manager.curve)
-    row.operator_context = 'INVOKE_DEFAULT'
+#     row = layout.row()
+#     row.context_pointer_set("curve", manager.curve)
+#     row.operator_context = 'INVOKE_DEFAULT'
     
-    box = row.column().box()
-    ops = row.column(align=True)
+#     box = row.column().box()
+#     ops = row.column(align=True)
+
+#     curve: BLCMAP_Curve = manager.curve
+
+#     if curve.is_property_set("node_identifier") and nodetree_node_exists(curve.node_identifier):
+#         row = box.row()
+#         row.ui_units_y = 0.01
+
+#         intrp = manager.interpolation
+#         split = row.split(factor=0.6)
+
+#         if intrp == 'CURVE':
+#             ACTIVE_CURVES.add(curve)
+
+#             if not bpy.app.timers.is_registered(check_active_curves):
+#                 bpy.app.timers.register(check_active_curves, first_interval=1.0)
+
+#             split.prop(manager, "interpolation", text="")
+
+#             node = nodetree_get().nodes[curve.node_identifier]
+#             seld = {pt.handle_type for pt in node.mapping.curves[0].points if pt.select}
+
+#             row = split.row(align=True)
+#             row.alignment = 'RIGHT'
+#             row.enabled = len(seld) > 0
+
+#             for htype, icon in (('AUTO', 'HANDLE_AUTO'),
+#                                 ('AUTO_CLAMPED', 'HANDLE_AUTOCLAMPED'),
+#                                 ('VECTOR', 'HANDLE_VECTOR')):
+#                 row.operator(BLCMAP_OT_handle_type_set.bl_idname,
+#                              text="",
+#                              icon=icon,
+#                              depress=(len(seld) == 1 and htype in seld)).handle_type = htype
+
+#             row.separator()
+#             row.operator(BCLMAP_OT_curve_point_remove.bl_idname,
+#                          text="",
+#                          icon='X')
+        
+#         else:
+#             ctype = manager.curve_type
+
+#             if ctype == 'BELL':
+#                 row = split.row()
+#                 row.prop(manager, 'ramp', text="", icon='NORMALIZE_FCURVES', icon_only=True)
+#                 row.prop(manager, "interpolation", text="")
+#             else:
+#                 split.prop(manager, "interpolation", text="")
+
+#             if intrp != 'LINEAR':
+#                 split.prop(manager, "easing", text="")
+
+#         curve = manager.curve
+
+#         col = box.column()
+#         col.scale_x = 0.01
+#         col.enabled = manager.interpolation == 'CURVE'
+#         col.template_curve_mapping(nodetree_node_ensure(curve.get_node_identifier(), curve), "mapping")
+#         col.separator(factor=0.3)
+
+#         ops.operator(BLCMAP_OT_curve_copy.bl_idname, icon='COPYDOWN', text="")
+#         ops.operator(BLCMAP_OT_curve_paste.bl_idname, icon='PASTEDOWN', text="")
+    
+#     else:
+#         row = box.row()
+#         row.label(icon='ERROR', text="Missing Curve")
+#         row.operator(BLCMAP_OT_node_ensure.bl_idname, text="Reload")
+#         ops.label(icon='BLANK1')
+
+
+def draw_curve_manager_ui(layout: bpy.types.UILayout, manager: BCLMAP_CurveManager) -> None:
+    box = layout.column().box()
+    box.context_pointer_set("curve", manager.curve)
+    box.operator_context = 'INVOKE_DEFAULT'
 
     curve: BLCMAP_Curve = manager.curve
 
-    if curve.is_property_set("node_identifier") and nodetree_node_exists(curve.node_identifier):
-        row = box.row()
-        row.ui_units_y = 0.01
-
-        intrp = manager.interpolation
-        split = row.split(factor=0.6)
-
-        if intrp == 'CURVE':
-            ACTIVE_CURVES.add(curve)
-
-            if not bpy.app.timers.is_registered(check_active_curves):
-                bpy.app.timers.register(check_active_curves, first_interval=1.0)
-
-            split.prop(manager, "interpolation", text="")
-
-            node = nodetree_get().nodes[curve.node_identifier]
-            seld = {pt.handle_type for pt in node.mapping.curves[0].points if pt.select}
-
-            row = split.row(align=True)
-            row.alignment = 'RIGHT'
-            row.enabled = len(seld) > 0
-
-            for htype, icon in (('AUTO', 'HANDLE_AUTO'),
-                                ('AUTO_CLAMPED', 'HANDLE_AUTOCLAMPED'),
-                                ('VECTOR', 'HANDLE_VECTOR')):
-                row.operator(BLCMAP_OT_handle_type_set.bl_idname,
-                             text="",
-                             icon=icon,
-                             depress=(len(seld) == 1 and htype in seld)).handle_type = htype
-
-            row.separator()
-            row.operator(BCLMAP_OT_curve_point_remove.bl_idname,
-                         text="",
-                         icon='X')
-        
-        else:
-            ctype = manager.curve_type
-
-            if ctype == 'BELL':
-                row = split.row()
-                row.prop(manager, 'ramp', text="", icon='NORMALIZE_FCURVES', icon_only=True)
-                row.prop(manager, "interpolation", text="")
-            else:
-                split.prop(manager, "interpolation", text="")
-
-            if intrp != 'LINEAR':
-                split.prop(manager, "easing", text="")
-
-        curve = manager.curve
-
-        col = box.column()
-        col.scale_x = 0.01
-        col.enabled = manager.interpolation == 'CURVE'
-        col.template_curve_mapping(nodetree_node_ensure(curve.get_node_identifier(), curve), "mapping")
-        col.separator(factor=0.3)
-
-        ops.operator(BLCMAP_OT_curve_copy.bl_idname, icon='COPYDOWN', text="")
-        ops.operator(BLCMAP_OT_curve_paste.bl_idname, icon='PASTEDOWN', text="")
-    
-    else:
+    if (not curve.is_property_set("node_identifier") or
+        not nodetree_node_exists(curve.node_identifier)
+        ):
         row = box.row()
         row.label(icon='ERROR', text="Missing Curve")
         row.operator(BLCMAP_OT_node_ensure.bl_idname, text="Reload")
-        ops.label(icon='BLANK1')
+        return
+
+    header = box.row()
+    header.ui_units_y = 0.01
+
+    split = header.split(factor=0.5)
+    leading = split.row(align=True)
+    trailing = split.row(align=True)
+
+    interpolation = curve.interpolation
+
+    if interpolation == 'CURVE':
+        ACTIVE_CURVES.add(curve)
+        if not bpy.app.timers.is_registered(check_active_curves):
+            bpy.app.timers.register(check_active_curves, first_interval=1.0)
+
+        leading.prop(manager, "interpolation", text="")
+
+        node = nodetree_get().nodes[curve.node_identifier]
+        selected = {pt.handle_type for pt in node.mapping.curves[0].points if pt.select}
+
+        trailing.alignment = 'RIGHT'
+        trailing.enabled = len(selected) > 0
+
+        for htype, icon in (('AUTO', 'HANDLE_AUTO'),
+                            ('AUTO_CLAMPED', 'HANDLE_AUTOCLAMPED'),
+                            ('VECTOR', 'HANDLE_VECTOR')):
+            depress = len(selected) == 1 and htype in selected
+            trailing.operator(BLCMAP_OT_handle_type_set.bl_idname,
+                              text="",
+                              icon=icon,
+                              depress=depress).handle_type = htype
+
+            trailing.separator()
+            trailing.operator(BCLMAP_OT_curve_point_remove.bl_idname,
+                              text="",
+                              icon='X')
+
+    else:
+        if manager.curve_type == 'BELL':
+            leading.prop(manager, 'ramp', text="", icon='NORMALIZE_FCURVES', icon_only=True)
+        
+        leading.prop(manager, "interpolation", text="")
+
+        if interpolation != 'LINEAR':
+            trailing.prop(manager, "easing", text="")
+
+    trailing.separator()
+    trailing = trailing.row()
+    trailing.alignment = 'RIGHT'
+    trailing.operator(BLCMAP_OT_curve_copy.bl_idname, icon='COPYDOWN', text="")
+    trailing.operator(BLCMAP_OT_curve_paste.bl_idname, icon='PASTEDOWN', text="")
+
+    body = box.column()
+    body.scale_x = 0.01
+    body.enabled = manager.interpolation == 'CURVE'
+    body.template_curve_mapping(nodetree_node_ensure(curve.get_node_identifier(), curve), "mapping")
+    body.separator(factor=0.3)
+
 
 #endregion UI Utilities
